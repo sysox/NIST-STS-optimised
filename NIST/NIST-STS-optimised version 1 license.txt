@@ -1,0 +1,28 @@
+NIST STS-optimised version 1 is optimised NIST STS 2.1.1.
+
+Copyright (C) 2014  Marek Sýs, Zdenek Øíha
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+
+NIST-optimised package (version 1) is built on NIST STS 2.1.1. 
+More details about new package you can find in:
+	Marek Sýs, Zdenìk Øíha Faster Randomness Testing with the NIST Statistical Test Suite, Security, Privacy, and Applied 		Cryptography Engineering, LNCS, vol 8804, pp. 272-284.
+
+
+ 
+
+
+In case of any questions you can contact us using following syso@mail.muni.cz , zriha@fi.muni.cz.

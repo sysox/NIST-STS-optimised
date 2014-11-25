@@ -19,7 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 NIST-optimised package (version 1) is built on NIST STS 2.1.1. 
 More details about new package you can find in:
-	Marek Sýs, Zdenìk Øíha Faster Randomness Testing with the NIST Statistical Test Suite, Security, Privacy, and Applied 		Cryptography Engineering, LNCS, vol 8804, pp. 272-284.
+	Marek Sys, Zdenìk Riha Faster Randomness Testing with the NIST Statistical Test Suite, Security, Privacy, and Applied 		Cryptography Engineering, LNCS, vol 8804, pp. 272-284.
 
 
  

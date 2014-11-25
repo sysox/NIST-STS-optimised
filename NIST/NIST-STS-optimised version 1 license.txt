@@ -1,6 +1,6 @@
 NIST STS-optimised version 1 is optimised NIST STS 2.1.1.
 
-Copyright (C) 2014  Marek Sýs, Zdenek Øíha
+Copyright (C) 2014  Marek Sys, Zdenek Riha
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License

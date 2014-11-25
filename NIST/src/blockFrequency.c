@@ -3,6 +3,7 @@
 #include <string.h>
 #include "../include/externs.h"
 #include "../include/cephes.h"
+#include "../include/tools.h"
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
                     B L O C K  F R E Q U E N C Y  T E S T
@@ -54,6 +55,37 @@ BlockFrequency(int M, int n)
 #endif
 }
 
+/* --------------------------------------------------------------------------
+
+The following code is distributed under the following BSD-style license:
+
+Copyright © 2013-2014 Marek Sys (syso@fi.muni.cz) & Zdenek Riha (zriha@fi.muni.cz).
+All Rights Reserved.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice, this
+list of conditions and the following disclaimer in the documentation and/or other
+materials provided with the distribution.
+
+3. The name of the author may not be used to endorse or promote products derived
+from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY AUTHORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+THE POSSIBILITY OF SUCH DAMAGE.
+
+-------------------------------------------------------------------------- */
 
 // works with global variables: array, R2
 // supported rangle of n: 1 - limited by size of int
@@ -107,6 +139,75 @@ BlockFrequency2(int M, int n)
 #ifdef VERIFY_RESULTS
 	R2.blockfrequency.chi_squared=chi_squared;
 	R2.blockfrequency.p_value=p_value;
+#endif
+	//printf("%lf ",sum);
+
+#ifdef FILE_OUTPUT
+	fprintf(stats[TEST_BLOCK_FREQUENCY], "\t\t\tBLOCK FREQUENCY TEST\n");
+	fprintf(stats[TEST_BLOCK_FREQUENCY], "\t\t---------------------------------------------\n");
+	fprintf(stats[TEST_BLOCK_FREQUENCY], "\t\tCOMPUTATIONAL INFORMATION:\n");
+	fprintf(stats[TEST_BLOCK_FREQUENCY], "\t\t---------------------------------------------\n");
+	fprintf(stats[TEST_BLOCK_FREQUENCY], "\t\t(a) Chi^2           = %f\n", chi_squared);
+	fprintf(stats[TEST_BLOCK_FREQUENCY], "\t\t(b) # of substrings = %d\n", N);
+	fprintf(stats[TEST_BLOCK_FREQUENCY], "\t\t(c) block length    = %d\n", M);
+	fprintf(stats[TEST_BLOCK_FREQUENCY], "\t\t(d) Note: %d bits were discarded.\n", n % M);
+	fprintf(stats[TEST_BLOCK_FREQUENCY], "\t\t---------------------------------------------\n");
+
+	fprintf(stats[TEST_BLOCK_FREQUENCY], "%s\t\tp_value = %f\n\n", p_value < ALPHA ? "FAILURE" : "SUCCESS", p_value); fflush(stats[TEST_BLOCK_FREQUENCY]);
+	fprintf(results[TEST_BLOCK_FREQUENCY], "%f\n", p_value); fflush(results[TEST_BLOCK_FREQUENCY]);
+#endif
+}
+
+void
+BlockFrequency3(int M, int n)
+{
+	int		mask, N,blockSum,block, n_ , processed_bits, padd_sum;
+	double  p_value, sum, pi, v, chi_squared;
+
+	int LUT_HW_size = 16;
+	int LUT_HW_Bsize = 2;
+	signed char *LUT_HW = LUT_HW_16;
+	unsigned char *p_tmp, *p_end;
+
+	if(1)
+	{
+		LUT_HW_size = 8;
+		LUT_HW_Bsize = 1;
+		LUT_HW = LUT_HW_8;
+	}
+
+	N = n / M; 		/* # OF SUBSTRING BLOCKS      */
+	n_ = N*M;
+	sum = 0.0;
+	mask = get_mask(LUT_HW_size);
+	blockSum = 0;
+	processed_bits = 0;
+	
+	//bits + LUT_HW_size < n_
+
+	p_end = array + (n- (n%LUT_HW_size))/8;
+	for (p_tmp = array; p_tmp < p_end; p_tmp += LUT_HW_Bsize){
+		block = *((unsigned int*)p_tmp) & mask;
+		blockSum += LUT_HW[block];
+		processed_bits += LUT_HW_size;
+
+		if(processed_bits >= M)
+		{
+			processed_bits -= M;
+			padd_sum = LUT_HW[ block & (get_mask(processed_bits) << ( LUT_HW_size - processed_bits))];
+			blockSum -= padd_sum;
+			pi = (double)blockSum / (double)M;
+
+			v = pi - 0.5;
+			sum = sum + v*v;
+			blockSum = padd_sum;
+		}
+	}
+	chi_squared = 4.0 * M * sum;
+	p_value = cephes_igamc(N / 2.0, chi_squared / 2.0);
+#ifdef VERIFY_RESULTS
+	R2.blockfrequency.chi_squared = chi_squared;
+	R2.blockfrequency.p_value = p_value;
 #endif
 	//printf("%lf ",sum);
 

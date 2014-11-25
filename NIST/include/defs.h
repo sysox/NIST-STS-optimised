@@ -49,6 +49,7 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 typedef unsigned char	BitSequence;
+//typedef unsigned int	T;
 
 typedef struct _testParameters {
 	int		n;
@@ -64,7 +65,7 @@ typedef struct _testParameters {
 } TP;
 
 // New structure for results comparison
-#ifdef VERIFY_RESULTS
+#ifdef VERIFY_RESULTS 
 struct results{
 	struct frequency_str{double sum, sum_n, p_value;} frequency;
 	struct blockfrequency_str{double chi_squared, p_value;} blockfrequency;
@@ -83,3 +84,4 @@ struct results{
 	struct dft_str {double	p_value, percentile, N_l, N_o, d;} dft;
 };
 #endif
+

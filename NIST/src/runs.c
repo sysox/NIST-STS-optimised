@@ -81,6 +81,38 @@ Runs(int n)
 #endif
 }
 
+/* --------------------------------------------------------------------------
+
+The following code is distributed under the following BSD-style license:
+
+Copyright © 2013-2014 Marek Sys (syso@fi.muni.cz) & Zdenek Riha (zriha@fi.muni.cz).
+All Rights Reserved.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice, this
+list of conditions and the following disclaimer in the documentation and/or other
+materials provided with the distribution.
+
+3. The name of the author may not be used to endorse or promote products derived
+from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY AUTHORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+THE POSSIBILITY OF SUCH DAMAGE.
+
+-------------------------------------------------------------------------- */
+
 
 void
 Runs2(int n)
@@ -189,4 +221,125 @@ Runs2(int n)
 	
 	//printf("R2: %d %lf \n",S,(double)V);
 	
+}
+
+
+void
+Runs3(int n)
+{
+	int		S, i;
+	double	pi, erfc_arg, p_value;
+	unsigned long int V;
+	unsigned int mask;
+	unsigned char *p_tmp, *p_end;
+
+	int LUT_HW_size = 16;
+	int LUT_HW_Bsize = 2;
+	signed char *LUT_HW = LUT_HW_16;
+
+	int LUT_Switches_size = 16;
+	int LUT_Switches_Bsize = 2;
+	signed char *LUT_Switches = LUT_Switches_16;
+	
+	if(1)
+	{
+		LUT_HW_size = 8;
+		LUT_HW_Bsize = 1;
+		LUT_HW = LUT_HW_8;
+
+		LUT_Switches_size = 8;
+		LUT_Switches_Bsize = 1;
+		LUT_Switches = LUT_Switches_8;
+	}
+
+	mask = get_mask(LUT_HW_size);
+
+	//count bits
+	S = 0;
+	mask = get_mask(LUT_HW_size);
+
+	p_end = array + (n- (n%LUT_HW_size))/8;
+	for (p_tmp = array; p_tmp < p_end; p_tmp += LUT_HW_Bsize){
+		S += LUT_HW[*((unsigned int*)p_tmp) & mask];
+	}
+	if (n % LUT_HW_size){
+		S += LUT_HW[ *((unsigned int*)p_tmp) & get_mask(n % LUT_HW_size)];
+	}
+
+	pi = (double)S / (double)n;
+	if (fabs(pi - 0.5) > (2.0 / sqrt(n))) {
+#ifdef FILE_OUTPUT
+		fprintf(stats[TEST_RUNS], "\t\t\t\tRUNS TEST\n");
+		fprintf(stats[TEST_RUNS], "\t\t------------------------------------------\n");
+		fprintf(stats[TEST_RUNS], "\t\tPI ESTIMATOR CRITERIA NOT MET! PI = %f\n", pi);
+#endif
+		p_value = 0.0;
+
+#ifdef VERIFY_RESULTS
+		R2.runs.p_value = p_value;
+		R2.runs.pi = pi;
+		R2.runs.V = 0.0;
+		R2.runs.erfc_arg = 0.0;
+#endif
+
+
+	}
+	else {
+
+
+		V = 1;
+
+		mask = get_mask(LUT_Switches_size + 1);
+		p_end = array + ((n-1) - (n-1)% LUT_Switches_size) /8 - LUT_Switches_Bsize + 1;
+		
+		for (p_tmp = array; p_tmp < p_end; p_tmp += LUT_Switches_Bsize){
+			V += LUT_Switches[*((unsigned int*)p_tmp) & mask];
+		}
+
+		//last incomplete block
+		if ( (n - 1 ) % LUT_Switches_size != 0){
+			for (i =  n - ((n - 1) % LUT_Switches_size) ; i < n; i++)
+			{
+				if ((get_nth_block_effect(array, i - 1) & 1) != (get_nth_block_effect(array, i) & 1))
+					V++;
+			}
+
+		}
+
+
+
+		erfc_arg = fabs((double)V - 2.0 * n * pi * (1 - pi)) / (2.0 * pi * (1 - pi) * sqrt(2 * n));
+		p_value = erfc(erfc_arg);
+
+#ifdef VERIFY_RESULTS
+		R2.runs.p_value = p_value;
+		R2.runs.pi = pi;
+		R2.runs.V = V;
+		R2.runs.erfc_arg = erfc_arg;
+#endif
+
+#ifdef FILE_OUTPUT
+		fprintf(stats[TEST_RUNS], "\t\t\t\tRUNS TEST\n");
+		fprintf(stats[TEST_RUNS], "\t\t------------------------------------------\n");
+		fprintf(stats[TEST_RUNS], "\t\tCOMPUTATIONAL INFORMATION:\n");
+		fprintf(stats[TEST_RUNS], "\t\t------------------------------------------\n");
+		fprintf(stats[TEST_RUNS], "\t\t(a) Pi                        = %f\n", pi);
+		fprintf(stats[TEST_RUNS], "\t\t(b) V_n_obs (Total # of runs) = %d\n", (int)V);
+		fprintf(stats[TEST_RUNS], "\t\t(c) V_n_obs - 2 n pi (1-pi)\n");
+		fprintf(stats[TEST_RUNS], "\t\t    -----------------------   = %f\n", erfc_arg);
+		fprintf(stats[TEST_RUNS], "\t\t      2 sqrt(2n) pi (1-pi)\n");
+		fprintf(stats[TEST_RUNS], "\t\t------------------------------------------\n");
+		if (isNegative(p_value) || isGreaterThanOne(p_value))
+			fprintf(stats[TEST_RUNS], "WARNING:  P_VALUE IS OUT OF RANGE.\n");
+
+		fprintf(stats[TEST_RUNS], "%s\t\tp_value = %f\n\n", p_value < ALPHA ? "FAILURE" : "SUCCESS", p_value); fflush(stats[TEST_RUNS]);
+#endif
+	}
+
+#ifdef FILE_OUTPUT
+	fprintf(results[TEST_RUNS], "%f\n", p_value); fflush(results[TEST_RUNS]);
+#endif
+
+	//printf("R2: %d %lf \n",S,(double)V);
+
 }

@@ -1,10 +1,41 @@
+/* --------------------------------------------------------------------------
+
+The following code is distributed under the following BSD-style license:
+
+Copyright © 2013-2014 Marek Sys (syso@fi.muni.cz) & Zdenek Riha (zriha@fi.muni.cz).
+All Rights Reserved.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice, this
+list of conditions and the following disclaimer in the documentation and/or other
+materials provided with the distribution.
+
+3. The name of the author may not be used to endorse or promote products derived
+from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY AUTHORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+THE POSSIBILITY OF SUCH DAMAGE.
+
+-------------------------------------------------------------------------- */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
 #include <time.h>
 #include <assert.h>
-//#include "../include/decls.h"
 #include "../include/externs.h"
 #include "../include/cephes.h"  
 #include "../include/utilities.h"
@@ -1022,25 +1053,56 @@ clock_t GetTickCount()
 }
 #endif
 
+
+char *test_name(int t)
+{
+	if (t <= 15) return testNames[t];
+	switch (t)
+	{
+	case 16: 
+	case 29: return "BlockFrequency";
+	case 17:
+	case 18: 
+	case 30: return "NonOverlappingTemplate";
+	case 19:
+	case 20: 
+	case 31: return "OverlappingTemplate";
+	case 21:
+	case 22:
+	case 23: 
+	case 34:
+	case 35:
+	case 36: return "ApproximateEntropy";
+	case 24:
+	case 25: 
+	case 32:
+	case 26:
+	case 33: return "Serial";
+	case 27:
+	case 28: return "LinearComplexity";
+	}
+	return "Unknown";
+}
+
 #include <locale.h>
 
 void speed(int scale,int repeat, int test_from, int test_to)
 {
-	int n,t,j,from,to;
+	int n,t,j,from,to,param;
 	FILE *f;
 #ifdef VERIFY_RESULTS
 	int r;
 #endif
 #ifdef _WIN32
 	__int64 Astart, Amiddle, Aend, Atime1, Atime2, Amintime1,Amintime2;
-	unsigned long Bstart, Bmiddle, Bend, Btime1, Btime2;
+	unsigned long Bstart, Bmiddle, Bend, Btime1, Btime2, Bmintime1, Bmintime2;
 //	LARGE_INTEGER Cstart, Cmiddle, Cend;
 //	__int64 Ctime1, Ctime2, Dtime1, Dtime2;
 //	FILETIME Dstart,Dmiddle,Dend,Dtest1,Dtest2,Dtest3,Dvoid;
 	DWORD affinity;
 #else
 	int64_t Astart, Amiddle, Aend, Atime1, Atime2, Amintime1,Amintime2;
-	clock_t Bstart, Bmiddle, Bend, Btime1, Btime2;
+	clock_t Bstart, Bmiddle, Bend, Btime1, Btime2, Bmintime1, Bmintime2;
 #endif
 
 #ifdef _WIN32
@@ -1055,16 +1117,21 @@ void speed(int scale,int repeat, int test_from, int test_to)
 
 	if(scale)
 	{
-		from=1024*1*8;
-		to=1024*1024*8*100;
+		//from=1024*1*8+1;
+		//to=1024*1024*8*100;
+		//from = 1024 * 1024+1;
+		//to = 1024 * 1024+1;
+		//from = 1000000; to = 1000000;
+		//from = 1024 * 1024; to = 1024 * 1024;
+		from = 3*3*3*3*3; to = 1024 * 1024 * 1024;
 	}
 	else
 	{
-		from=1024*1024*8*200;
-		to=1024*1024*8*200;
+		from=1024*1024*8*20;
+		to=1024*1024*8*20;
 	}
 
-	for(n=from;n<=to;n=(scale)?n*10+rand()%8:n+1)
+	for(n=from;n<=to;n=(scale)?n*3/*((n-1)*2)+1*//* *10 +rand()%8 */:n+1)
 	{
         for(t=test_from;t<=test_to;t++)
 		{
@@ -1081,23 +1148,46 @@ void speed(int scale,int repeat, int test_from, int test_to)
 				*/
 #endif
 
+				param = 0;
+
 				switch(t)
 				{
 				case TEST_FREQUENCY: Frequency(n); break;
-				case TEST_BLOCK_FREQUENCY: if(n>=20) BlockFrequency(20,n); break;
+				case TEST_BLOCK_FREQUENCY: if (n >= 100) BlockFrequency(n / 100, n); param = n / 100;  break;
 				case TEST_CUSUM: CumulativeSums(n); break;
 				case TEST_RUNS: Runs(n); break;
 				case TEST_LONGEST_RUN: LongestRunOfOnes(n); break;
 				case TEST_RANK: if(n>32*32) Rank(n); break;
-				case TEST_FFT: DiscreteFourierTransform(n); break;
-				case TEST_NONPERIODIC: NonOverlappingTemplateMatchings(2,n); break;
-				case TEST_OVERLAPPING: OverlappingTemplateMatchings(10,n); break;
+				case TEST_FFT: DiscreteFourierTransform(n); printf("@\n");  break;
+				case TEST_NONPERIODIC: NonOverlappingTemplateMatchings(10, n); param = 10;  break;
+				case TEST_OVERLAPPING: OverlappingTemplateMatchings(10, n); param = 10;  break;
 				case TEST_UNIVERSAL: Universal(n); break;
-				case TEST_APEN: ApproximateEntropy(2,n); break;
+				case TEST_APEN: ApproximateEntropy(9, n); param = 9;  break;
 				case TEST_RND_EXCURSION: RandomExcursions(n); break;
 				case TEST_RND_EXCURSION_VAR: RandomExcursionsVariant(n); break;
-				case TEST_SERIAL: if(log2(n)>=8) Serial(2,n); break;
-				case TEST_LINEARCOMPLEXITY: LinearComplexity(5000,n); break;
+				case TEST_SERIAL: if (log2(n) >= 9) Serial(9, n); param = 9;  break;
+				case TEST_LINEARCOMPLEXITY: LinearComplexity(5000, n); param = 5000;  break;
+				case 16: BlockFrequency(20, n); param = 20; break;
+				case 17: NonOverlappingTemplateMatchings(2, n); param = 2; break;
+				case 18: NonOverlappingTemplateMatchings(9, n); param = 9; break;
+				case 19: OverlappingTemplateMatchings(2, n); param = 2;  break;
+				case 20: OverlappingTemplateMatchings(9, n); param = 9;  break;
+				case 21: ApproximateEntropy(2, n); param = 2;  break; 
+				case 22: ApproximateEntropy(5, n); param = 5;  break;
+				case 23: ApproximateEntropy(24, n); param = 24;  break;
+				case 24: if (log2(n) >= 2) Serial(2, n); param = 2;  break;
+				case 25: if (log2(n) >= 24) Serial(24, n); param = 24;  break;
+				case 26: if (log2(n) >= 5) Serial(5, n); param = 5;  break;
+				case 27: LinearComplexity(500, n); param = 500;   break;
+				case 28: LinearComplexity(1000, n); param = 1000;   break;
+				case 29: BlockFrequency(128, n); param = 128; break;
+				case 30: NonOverlappingTemplateMatchings(21, n); param = 21; break;
+				case 31: OverlappingTemplateMatchings(24, n); param = 24;  break;
+				case 32: if (log2(n) >= 15) Serial(13, n); param = 13;  break;
+				case 33: if (log2(n) >= 17) Serial(14, n); param = 14;  break;
+				case 34: ApproximateEntropy(27, n); param = 27;  break;
+				case 35: ApproximateEntropy(8, n); param = 8;  break;
+				case 36: ApproximateEntropy(10, n); param = 10;  break;
 				}
 				 
 				Amiddle=GetCpuClocks();
@@ -1112,20 +1202,41 @@ void speed(int scale,int repeat, int test_from, int test_to)
 				switch(t)
 				{
 				case TEST_FREQUENCY: Frequency2(n); break;
-				case TEST_BLOCK_FREQUENCY: if(n>=20) BlockFrequency2(20,n); break;
+				case TEST_BLOCK_FREQUENCY: if (n >= 100) BlockFrequency2(n/100, n); break;
 				case TEST_CUSUM: CumulativeSums2(n); break;
-				case TEST_RUNS: Runs2(n); break;
+				case TEST_RUNS: Runs3(n); break;
 				case TEST_LONGEST_RUN: LongestRunOfOnes2(n); break;
 				case TEST_RANK: if(n>32*32) Rank2(n); break;
 				case TEST_FFT: DiscreteFourierTransform2(n);  break;
-				case TEST_NONPERIODIC: NonOverlappingTemplateMatchings2(2,n); break;
-				case TEST_OVERLAPPING: OverlappingTemplateMatchings2(10,n); break;
+				case TEST_NONPERIODIC: NonOverlappingTemplateMatchings2(10,n); break;
+				case TEST_OVERLAPPING: OverlappingTemplateMatchingsX(10,n); break;
 				case TEST_UNIVERSAL: Universal2(n); break;
-				case TEST_APEN: ApproximateEntropy2(2,n); break;
+				case TEST_APEN: ApproximateEntropy2(9,n); break;
 				case TEST_RND_EXCURSION: RandomExcursions2(n); break;
 				case TEST_RND_EXCURSION_VAR: RandomExcursionsVariant2(n); break;
-				case TEST_SERIAL: if(log2(n)>=2) Serial2(2,n); break;
-				case TEST_LINEARCOMPLEXITY: LinearComplexity2(5000,n);  break;
+				case TEST_SERIAL: if(log2(n)>=9) Serial2(9,n); break;
+				case TEST_LINEARCOMPLEXITY: LinearComplexity3(5000,n);  break;
+				case 16: BlockFrequency2(20, n); break;
+				case 17: NonOverlappingTemplateMatchings2(2, n); break;
+				case 18: NonOverlappingTemplateMatchings2(9, n); break;
+				case 19: OverlappingTemplateMatchingsX(2, n); break;
+				case 20: OverlappingTemplateMatchingsX(9, n); break;
+				case 21: ApproximateEntropy2(2, n); break;
+				case 22: ApproximateEntropy2(5, n); break;
+				case 23: ApproximateEntropy2(24, n); break;
+				case 24: if (log2(n) >= 2) Serial2(2, n); break;
+				case 25: if (log2(n) >= 24) Serial2(24, n); break;
+				case 26: if (log2(n) >= 5) Serial2(5, n); break;
+				case 27: LinearComplexity3(500, n); break;
+				case 28: LinearComplexity3(1000, n); break;
+				case 29: BlockFrequency2(128, n); break;
+				case 30: NonOverlappingTemplateMatchings2(21, n); break;
+				case 31: OverlappingTemplateMatchingsX(24, n); break;
+				case 32: if (log2(n) >= 15) Serial2(13, n); break;
+				case 33: if (log2(n) >= 17) Serial2(14, n); break;
+				case 34: ApproximateEntropy2(27, n); break;
+				case 35: ApproximateEntropy2(8, n); break;
+				case 36: ApproximateEntropy2(10, n); break;
 				}
 
 				Aend=GetCpuClocks();
@@ -1139,16 +1250,22 @@ void speed(int scale,int repeat, int test_from, int test_to)
 
 				Atime1=Amiddle-Astart;
 				Atime2=Aend-Amiddle;
+				Btime1 = Bmiddle - Bstart;
+				Btime2 = Bend - Bmiddle;
+
 				if(j==1)
 				{
 					Amintime1=Atime1;
 					Amintime2=Atime2;
+					Bmintime1 = Btime1;
+					Bmintime2 = Btime2;
 				}
+
 				if(Atime1<Amintime1) Amintime1=Atime1;
 				if(Atime2<Amintime2) Amintime2=Atime2;
+				if (Btime1<Bmintime1) Bmintime1 = Btime1;
+				if (Btime2<Bmintime2) Bmintime2 = Btime2;
 
-				Btime1=Bmiddle-Bstart;
-				Btime2=Bend-Bmiddle;
 
 #ifdef _WIN32
 				/*
@@ -1160,12 +1277,12 @@ void speed(int scale,int repeat, int test_from, int test_to)
 #endif
 
 				//printf("%s (%i bits): %f x faster [CPU clocks], %f x faster [GetTickCount - %ul ms vs. %ul ms], %f x faster [QueryPerformanceCounter], %f x faster [GetProcessTimes]\n",testNames[t],n,(float)Atime1/Atime2, (float)Btime1/Btime2, Btime1, Btime2, (float)Ctime1/Ctime2, (float)Dtime1/Dtime2);
-				printf("%s (%i bits): %f x faster [CPU clocks], %f x faster [GetTickCount - %lu ms vs. %lu ms].\n",testNames[t],n,(float)Atime1/Atime2, (float)Btime1/Btime2, Btime1, Btime2);
+				printf("%s [%i] (%i bits): %f x faster [CPU clocks], %f x faster [GetTickCount - %lu ms vs. %lu ms].\n", test_name(t), param,n, (float)Atime1 / Atime2, (float)Btime1 / Btime2, Btime1, Btime2);
 				//printf("%s (%i bits): %f x faster\n",testNames[t],n,(float)Atime1/Atime2);
 				//printf("%s (%i bits): %f x faster {GetProcessTimes}\n",testNames[t],n,(float)Dtime1/Dtime2);
-				fprintf(f, "%s;%I64i;%I64i;%f;%lu;%lu;%f\n", testNames[t], Atime1, Atime2, (float)Atime1 / Atime2, Btime1, Btime2, (float)Btime1 / Btime2);
+				//fprintf(f, "%s [%i];%I64i;%I64i;%f;%lu;%lu;%f\n", test_name(t),param, Atime1, Atime2, (float)Atime1 / Atime2, Btime1, Btime2, (float)Btime1 / Btime2);
 				fflush(stdout);
-				fflush(f);
+				//fflush(f);
 
 #ifdef VERIFY_RESULTS
 				r=compare_results(t);
@@ -1178,13 +1295,229 @@ void speed(int scale,int repeat, int test_from, int test_to)
 #endif
 
 				}
-				//printf("MINIMUM - %s (%i bits): %f x faster [CPU clocks]\n",testNames[t],n,(float)Amintime1/Amintime2);
+				printf("MINIMUM - %s (%i bits) [%i]: %f x faster [CPU clocks: %I64i vs. %I64i], %f x faster [ms: %i vs. %i]\n", test_name(t), n, param, (float)Amintime1 / Amintime2, Amintime1, Amintime2, (float)Bmintime1 / Bmintime2, Bmintime1, Bmintime2);
+				fprintf(f, "%s [%i];%I64i;%I64i;%f;%lu;%lu;%f\n", test_name(t), param, Amintime1, Amintime2, (float)Amintime1 / Amintime2, Bmintime1, Bmintime2, (float)Bmintime1 / Bmintime2);
+				fflush(f);
 				free(epsilon); free(array);
 		}
 		printf("Done n=%i.\n",n);
 	}
 	fclose(f);
 }
+
+/*
+void TestRank()
+{
+
+	int n, j, from, to, repeat;
+	FILE *f;
+	__int64 Astart, Amiddle, Aend, Atime1, Atime2, Amintime1, Amintime2;
+	unsigned long Bstart, Bmiddle, Bend, Btime1, Btime2, Bmintime1, Bmintime2;
+	DWORD affinity;
+
+	affinity = 1;
+	SetThreadAffinityMask(GetCurrentThread(), affinity);
+	SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
+
+	setlocale(LC_NUMERIC, "Czech");
+	f = fopen("speed_rank.csv", "wt");
+	if (!f) { printf("Cannot open file speed.csv for writing.\n"); exit(3); };
+
+	from = 1024 * 1024 * 8 * 150;
+	to = 1024 * 1024 * 8 * 200;
+	repeat = 10;
+
+	for (n = from; n <= to; n += 1024*1024*8)
+	{
+		data_prandom(n);
+
+		for (j = 1; j <= repeat; j++)
+		{
+			Astart = GetCpuClocks();
+			Bstart = GetTickCount();
+			if (n > 32 * 32) Rank(n);
+			Amiddle = GetCpuClocks();
+			Bmiddle = GetTickCount();
+			if (n > 32 * 32) Rank2(n);
+
+			Aend = GetCpuClocks();
+			Bend = GetTickCount();
+
+			Atime1 = Amiddle - Astart;
+			Atime2 = Aend - Amiddle;
+			Btime1 = Bmiddle - Bstart;
+			Btime2 = Bend - Bmiddle;
+
+			if (j == 1)
+			{
+				Amintime1 = Atime1;
+				Amintime2 = Atime2;
+				Bmintime1 = Btime1;
+				Bmintime2 = Btime2;
+			}
+
+			if (Atime1 < Amintime1) Amintime1 = Atime1;
+			if (Atime2 < Amintime2) Amintime2 = Atime2;
+			if (Btime1 < Bmintime1) Bmintime1 = Btime1;
+			if (Btime2 < Bmintime2) Bmintime2 = Btime2;
+
+			printf("Rank (%i bits): %f x faster [CPU clocks], %f x faster [GetTickCount - %lu ms vs. %lu ms].\n", n, (float)Atime1 / Atime2, (float)Btime1 / Btime2, Btime1, Btime2);
+			fflush(stdout);
+		}
+		printf("MINIMUM - Rank (%i bits): %f x faster [CPU clocks: %I64i vs. %I64i], %f x faster [ms: %i vs. %i]\n", n, (float)Amintime1 / Amintime2, Amintime1, Amintime2, (float)Bmintime1 / Bmintime2, Bmintime1, Bmintime2);
+		fprintf(f, "Rank; %i; %i; %I64i; %I64i; %f; %lu; %lu; %f\n", n, n / 8,  Amintime1, Amintime2, (float)Amintime1 / Amintime2, Bmintime1, Bmintime2, (float)Bmintime1 / Bmintime2);
+		fflush(f);
+		free(epsilon); free(array);
+		printf("Done n=%i.\n", n);
+	}
+	fclose(f);
+}
+*/
+
+/*
+int TestNonParam[] = { 2, 4, 6, 10, 16, 21};
+
+void TestNonOver()
+{
+
+	int n, j, from, to, repeat, param, index;
+	FILE *f;
+	__int64 Astart, Amiddle, Aend, Atime1, Atime2, Amintime1, Amintime2;
+	unsigned long Bstart, Bmiddle, Bend, Btime1, Btime2, Bmintime1, Bmintime2;
+	DWORD affinity;
+
+	affinity = 1;
+	SetThreadAffinityMask(GetCurrentThread(), affinity);
+	SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
+
+	setlocale(LC_NUMERIC, "Czech");
+	f = fopen("speed_nonover.csv", "wt");
+	if (!f) { printf("Cannot open file speed.csv for writing.\n"); exit(3); };
+
+	from = 1024 * 1024 * 8;
+	to = 1024 * 1024 * 8 * 200;
+	repeat = 3;
+
+	for (n = from; n <= to; n += 1024 * 1024 * 8)
+	{
+		data_prandom(n);
+		//for (index = 0, param = TestNonParam[0]; index<=5; index++, param=TestNonParam[index])
+		for (param=9; param<=9; param++)
+		{
+
+			for (j = 1; j <= repeat; j++)
+			{
+				Astart = GetCpuClocks();
+				Bstart = GetTickCount();
+				NonOverlappingTemplateMatchings(param, n);
+				Amiddle = GetCpuClocks();
+				Bmiddle = GetTickCount();
+				NonOverlappingTemplateMatchings2(param, n);
+
+				Aend = GetCpuClocks();
+				Bend = GetTickCount();
+
+				Atime1 = Amiddle - Astart;
+				Atime2 = Aend - Amiddle;
+				Btime1 = Bmiddle - Bstart;
+				Btime2 = Bend - Bmiddle;
+
+				if (j == 1)
+				{
+					Amintime1 = Atime1;
+					Amintime2 = Atime2;
+					Bmintime1 = Btime1;
+					Bmintime2 = Btime2;
+				}
+
+				if (Atime1 < Amintime1) Amintime1 = Atime1;
+				if (Atime2 < Amintime2) Amintime2 = Atime2;
+				if (Btime1 < Bmintime1) Bmintime1 = Btime1;
+				if (Btime2 < Bmintime2) Bmintime2 = Btime2;
+
+				printf("NonOver [%i] (%i bits): %f x faster [CPU clocks], %f x faster [GetTickCount - %lu ms vs. %lu ms].\n", param, n, (float)Atime1 / Atime2, (float)Btime1 / Btime2, Btime1, Btime2);
+				fflush(stdout);
+			}
+			printf("MINIMUM - NonOver [%i] (%i bits): %f x faster [CPU clocks: %I64i vs. %I64i], %f x faster [ms: %i vs. %i]\n", param, n, (float)Amintime1 / Amintime2, Amintime1, Amintime2, (float)Bmintime1 / Bmintime2, Bmintime1, Bmintime2);
+			fprintf(f, "NonOver;%i; %i; %i; %I64i; %I64i; %f; %lu; %lu; %f\n", param, n, n / 8, Amintime1, Amintime2, (float)Amintime1 / Amintime2, Bmintime1, Bmintime2, (float)Bmintime1 / Bmintime2);
+			fflush(f);
+		}
+		free(epsilon); free(array);
+		printf("Done n=%i.\n", n);
+	}
+	fclose(f);
+}
+
+void TestLinCom()
+{
+
+	int n, j, from, to, repeat,param;
+	FILE *f;
+	__int64 Astart, Amiddle, Aend, Atime1, Atime2, Amintime1, Amintime2;
+	unsigned long Bstart, Bmiddle, Bend, Btime1, Btime2, Bmintime1, Bmintime2;
+	DWORD affinity;
+
+	affinity = 1;
+	SetThreadAffinityMask(GetCurrentThread(), affinity);
+	SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
+
+	setlocale(LC_NUMERIC, "Czech");
+	f = fopen("speed_lincom.csv", "wt");
+	if (!f) { printf("Cannot open file speed.csv for writing.\n"); exit(3); };
+
+	from = 1024 * 1024 * 8 * 10; 
+	to = 1024 * 1024 * 8 * 10; 
+	repeat = 3;
+
+	for (n = from; n <= to; n += 1024 * 1024 * 8)
+	{
+		data_prandom(n);
+		for (param = 500; param <= 5000; param+=100) // 500
+		{
+
+			for (j = 1; j <= repeat; j++)
+			{
+				Astart = GetCpuClocks();
+				Bstart = GetTickCount();
+				LinearComplexity(param, n);
+				Amiddle = GetCpuClocks();
+				Bmiddle = GetTickCount();
+				LinearComplexity3(param, n);
+
+				Aend = GetCpuClocks();
+				Bend = GetTickCount();
+
+				Atime1 = Amiddle - Astart;
+				Atime2 = Aend - Amiddle;
+				Btime1 = Bmiddle - Bstart;
+				Btime2 = Bend - Bmiddle;
+
+				if (j == 1)
+				{
+					Amintime1 = Atime1;
+					Amintime2 = Atime2;
+					Bmintime1 = Btime1;
+					Bmintime2 = Btime2;
+				}
+
+				if (Atime1 < Amintime1) Amintime1 = Atime1;
+				if (Atime2 < Amintime2) Amintime2 = Atime2;
+				if (Btime1 < Bmintime1) Bmintime1 = Btime1;
+				if (Btime2 < Bmintime2) Bmintime2 = Btime2;
+
+				printf("LinCom [%i] (%i bits): %f x faster [CPU clocks], %f x faster [GetTickCount - %lu ms vs. %lu ms].\n", param, n, (float)Atime1 / Atime2, (float)Btime1 / Btime2, Btime1, Btime2);
+				fflush(stdout);
+			}
+			printf("MINIMUM - LinCom [%i] (%i bits): %f x faster [CPU clocks: %I64i vs. %I64i], %f x faster [ms: %i vs. %i]\n", param, n, (float)Amintime1 / Amintime2, Amintime1, Amintime2, (float)Bmintime1 / Bmintime2, Bmintime1, Bmintime2);
+			fprintf(f, "LinCom;%i; %i; %i; %I64i; %I64i; %f; %lu; %lu; %f\n", param, n, n / 8, Amintime1, Amintime2, (float)Amintime1 / Amintime2, Bmintime1, Bmintime2, (float)Bmintime1 / Bmintime2);
+			fflush(f);
+		}
+		free(epsilon); free(array);
+		printf("Done n=%i.\n", n);
+	}
+	fclose(f);
+}
+*/
 
 #ifdef VERIFY_RESULTS
 int main(int argc, char **argv)
@@ -1206,6 +1539,7 @@ int main(int argc, char **argv)
 #ifdef SPEED
 int main(int argc, char **argv)
 {
+	
 	int scale,repeat, test_from, test_to;
 
 	if(argc>=2)
@@ -1215,7 +1549,7 @@ int main(int argc, char **argv)
 	if(argc>=3)
 		repeat=atoi(argv[2]);
 	else
-		repeat=1;
+		repeat=10;
 	if (argc >= 4)
 		test_from = atoi(argv[3]);
 	else
@@ -1223,10 +1557,13 @@ int main(int argc, char **argv)
 	if (argc >= 5)
 		test_to = atoi(argv[4]);
 	else
-		test_to = 15;
+		test_to = 36;
 	
 	speed(scale,repeat,test_from,test_to);
 	
+	//TestRank();
+	//TestNonOver();
+	//TestLinCom();
 	return 0;
 }
 #endif

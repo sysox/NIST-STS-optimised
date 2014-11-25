@@ -301,8 +301,7 @@ readHexDigitsInBinaryFormat(FILE *fp)
 {
 	int		i, done, num_0s, num_1s, bitsRead, index, ones, bits, j;
 	BYTE	buffer[4];
-	FILE *freqfp;
-	freqfp = fopen("stat.txt","w");
+	
 	if(tp.fast)
 	{
 		if ( (array = (unsigned char *) calloc((tp.n>>3)+4,sizeof(unsigned char))) == NULL ) {
@@ -323,12 +322,7 @@ readHexDigitsInBinaryFormat(FILE *fp)
 					free(array);
 					return;
 				}
-				j = array[index]=LU_byte_inverted[buffer[0]];
-				
-				for(i=0; i < 8; i++)
-				{
-					printf("%i",(j>>i) & 1);
-				}
+				array[index]=LU_byte_inverted[buffer[0]];
 				index++;
 				if((index<<3)<=tp.n)
 				{
@@ -355,17 +349,6 @@ readHexDigitsInBinaryFormat(FILE *fp)
 			//printf("\t\tBITSREAD = %d 0s = %d 1s = %d\n", bitsRead, num_0s, num_1s);
 			nist_test_suite();
 		}
-		printf("\n");
-		j = ((int*)array)[0];
-		for(i=0; i < 32; i++)
-		{
-			printf("%i",(j>>i) & 1);
-		}
-		j = ((int*)array)[1];
-		for(i=0; i < 32; i++)
-		{
-			printf("%i",(j>>i) & 1);
-		}
 		free(array);
 	}
 	else
@@ -391,10 +374,6 @@ readHexDigitsInBinaryFormat(FILE *fp)
 			} while ( !done );
 			fprintf(freqfp, "\t\tBITSREAD = %d 0s = %d 1s = %d\n", bitsRead, num_0s, num_1s);
 			//printf("\t\tBITSREAD = %d 0s = %d 1s = %d\n", bitsRead, num_0s, num_1s);
-			for(i = 0; i < tp.n; i++)
-			{
-				printf("%i",epsilon[i]);
-			}
 			nist_test_suite();
 		}
 		free(epsilon);
@@ -585,3 +564,31 @@ nist_test_suite()
 	if ( (testVector[0] == 1) || (testVector[TEST_LINEARCOMPLEXITY] == 1) )
 		if(tp.fast) LinearComplexity2(tp.linearComplexitySequenceLength, tp.n); else LinearComplexity(tp.linearComplexitySequenceLength, tp.n);
 }
+
+/*
+void  prepare_optimisation(){
+
+	op.num_of_ones = -1;
+	op.LUT_HW_size = op.LUT_Cusum_size = op.LUT_Run_size = op.LUT_Lrun_size = op.LUT_Switches_size = 16;
+	op.LUT_HW_Bsize = op.LUT_Cusum_Bsize = op.LUT_Run_Bsize = op.LUT_Lrun_Bsize = op.LUT_Switches_Bsize = 2;
+
+
+
+	//LUT Hamming weigh
+	set_LUT(op.LUT_HW_size, &op.LUT_HW, func_HW);
+
+	//LUT for Runs - overlapping blocks => size +1
+	set_LUT(op.LUT_Switches_size + 1, &op.LUT_Switches, func_Runs);
+
+	//LUTs for longest run
+	set_LUT(op.LUT_Lrun_size, &op.LUT_Lrun_start, func_LRun_start);
+	set_LUT(op.LUT_Lrun_size, &op.LUT_Lrun_max, func_LRun_max);
+	set_LUT(op.LUT_Lrun_size, &op.LUT_Lrun_end, func_LRun_end);
+
+	//LUts for Cusum
+	set_LUT(op.LUT_Cusum_size, &op.LUT_Cusum_max_positiv, func_Cusum_max_positiv);
+	set_LUT(op.LUT_Cusum_size, &op.LUT_Cusum_max_negativ, func_Cusum_max_negativ);
+	set_LUT(op.LUT_Cusum_size, &op.LUT_Cusum, func_Cusum);
+
+}
+*/

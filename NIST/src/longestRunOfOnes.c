@@ -133,6 +133,38 @@ LongestRunOfOnes(int n)
 #endif
 }
 
+/* --------------------------------------------------------------------------
+
+The following code is distributed under the following BSD-style license:
+
+Copyright © 2013-2014 Marek Sys (syso@fi.muni.cz) & Zdenek Riha (zriha@fi.muni.cz).
+All Rights Reserved.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice, this
+list of conditions and the following disclaimer in the documentation and/or other
+materials provided with the distribution.
+
+3. The name of the author may not be used to endorse or promote products derived
+from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY AUTHORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+THE POSSIBILITY OF SUCH DAMAGE.
+
+-------------------------------------------------------------------------- */
+
 void
 LongestRunOfOnes2(int n)
 {
@@ -297,6 +329,226 @@ LongestRunOfOnes2(int n)
 				nu[3], nu[4], nu[5], nu[6]);
 	}
 	if ( isNegative(pval) || isGreaterThanOne(pval) )
+		fprintf(stats[TEST_LONGEST_RUN], "WARNING:  P_VALUE IS OUT OF RANGE.\n");
+
+	fprintf(stats[TEST_LONGEST_RUN], "%s\t\tp_value = %f\n\n", pval < ALPHA ? "FAILURE" : "SUCCESS", pval); fflush(stats[TEST_LONGEST_RUN]);
+	fprintf(results[TEST_LONGEST_RUN], "%f\n", pval); fflush(results[TEST_LONGEST_RUN]);
+#endif
+}
+
+void
+LongestRunOfOnes3(int n)
+{
+	unsigned int    mask, tmp, processed_bits, block;
+
+	double			pval, chi2, pi[7];
+	int				run, v_n_obs, N, i, K, M, V[7];
+	unsigned int	nu[7] = { 0, 0, 0, 0, 0, 0, 0 };
+
+	/*
+	int LUT_Lrun_size = 8;
+	int LUT_Lrun_Bsize = 1;
+
+	signed char *LUT_Lrun_start = LUT_Lrun_start_8;
+	signed char *LUT_Lrun_end = LUT_Lrun_end_8;
+	signed char *LUT_Lrun_max = LUT_Lrun_max_8;
+	*/
+	
+	int LUT_Lrun_size = 16;
+	int LUT_Lrun_Bsize = 2;
+
+	signed char *LUT_Lrun_start = LUT_Lrun_start_16;
+	signed char *LUT_Lrun_end = LUT_Lrun_end_16;
+	signed char *LUT_Lrun_max = LUT_Lrun_max_16;
+	
+	unsigned char *p_tmp, *p_end;
+
+	if (n < 128) {
+#ifdef FILE_OUTPUT
+		fprintf(stats[TEST_LONGEST_RUN], "\t\t\t  LONGEST RUNS OF ONES TEST\n");
+		fprintf(stats[TEST_LONGEST_RUN], "\t\t---------------------------------------------\n");
+		fprintf(stats[TEST_LONGEST_RUN], "\t\t   n=%d is too short\n", n);
+#endif
+		return;
+	}
+	if (n < 6272) {
+		K = 3;
+		M = 8;
+		V[0] = 1; V[1] = 2; V[2] = 3; V[3] = 4;
+		pi[0] = 0.21484375;
+		pi[1] = 0.3671875;
+		pi[2] = 0.23046875;
+		pi[3] = 0.1875;
+	}
+	else if (n < 750000) {
+		K = 5;
+		M = 128;
+		V[0] = 4; V[1] = 5; V[2] = 6; V[3] = 7; V[4] = 8; V[5] = 9;
+		pi[0] = 0.1174035788;
+		pi[1] = 0.242955959;
+		pi[2] = 0.249363483;
+		pi[3] = 0.17517706;
+		pi[4] = 0.102701071;
+		pi[5] = 0.112398847;
+	}
+	else {
+		K = 6;
+		M = 10000;
+		V[0] = 10; V[1] = 11; V[2] = 12; V[3] = 13; V[4] = 14; V[5] = 15; V[6] = 16;
+		pi[0] = 0.0882;
+		pi[1] = 0.2092;
+		pi[2] = 0.2483;
+		pi[3] = 0.1933;
+		pi[4] = 0.1208;
+		pi[5] = 0.0675;
+		pi[6] = 0.0727;
+	}
+
+
+
+
+	if (M == 8 || 0)
+	{
+		LUT_Lrun_size = 8;
+		LUT_Lrun_Bsize = 1;
+
+		LUT_Lrun_start = LUT_Lrun_start_8;
+		LUT_Lrun_end = LUT_Lrun_end_8;
+		LUT_Lrun_max = LUT_Lrun_max_8;
+	}
+
+	
+	N = n / M;
+	run = 0;
+	block = 1;
+	processed_bits = 0;
+	mask = get_mask(LUT_Lrun_size);
+	v_n_obs = 0;
+	
+	p_end = array + M*N/8;
+	for (p_tmp = array; p_tmp < p_end; p_tmp += LUT_Lrun_Bsize)
+	{
+		tmp =  *((unsigned int*)p_tmp) & mask;
+		run += LUT_Lrun_start[tmp];
+
+		if (run > v_n_obs){
+			v_n_obs = run;
+		}
+		if (LUT_Lrun_max[tmp] > v_n_obs){
+			v_n_obs = LUT_Lrun_max[tmp];
+		}
+
+		if (tmp != mask) run = LUT_Lrun_end[tmp];
+		processed_bits += LUT_Lrun_size;
+
+		if (processed_bits == M*block){
+			if (v_n_obs < V[0])nu[0]++;
+			else if (v_n_obs > V[K])nu[K]++;
+			else nu[v_n_obs - V[0]]++;
+			block++;
+			v_n_obs = run = 0;
+		}
+	}
+
+	/*
+	run = 0;
+	processed_bits = 0;
+	byte_size = M*N / 8;
+	mask = get_mask(LUT_Lrun_size);
+	block = 1;
+	Boffset = 0;
+	v_n_obs = 0;
+	
+	for (Boffset = 0; Boffset < byte_size; Boffset += LUT_Lrun_Bsize) {
+
+		tmp = get_block_fast(array, Boffset) & mask;
+		run += LUT_Lrun_start[tmp];
+
+		if (run > v_n_obs){
+			v_n_obs = run;
+		}
+		if (LUT_Lrun_max[tmp] > v_n_obs){
+			v_n_obs = LUT_Lrun_max[tmp];
+		}
+
+		if (tmp != mask) run = LUT_Lrun_end[tmp];
+		processed_bits += LUT_Lrun_size;
+
+		if (processed_bits == M*block){
+			if (v_n_obs < V[0])nu[0]++;
+			else if (v_n_obs > V[K])nu[K]++;
+			else nu[v_n_obs - V[0]]++;
+			block++;
+			v_n_obs = run = 0;
+		}
+	}
+
+
+	*/
+
+	/*
+	for ( i=0; i<N; i++ ) {
+	block = get_block_fast(array, offset >> 3) & mask;
+
+	v_n_obs = op.LUT_max_run[block];
+	run = op.LUT_end_run[block];
+
+	for(; offset + shift < i*M; offset += shift)
+	{
+	block = get_block_fast(array, offset >> 3) & mask;
+	run += op.LUT_start_run[get_block_fast(array, offset >> 3) & mask];
+
+	if ( run > v_n_obs ) v_n_obs = run;
+	if ( op.LUT_max_run[block] > v_n_obs ) v_n_obs = op.LUT_max_run[block];
+	if(block != mask) run = op.LUT_end_run[block];
+	}
+
+	if(v_n_obs < V[0])nu[0]++;
+	else if(v_n_obs > V[K])nu[K]++;
+	else nu[v_n_obs-V[0]]++;
+	}*/
+
+	chi2 = 0.0;
+	for (i = 0; i <= K; i++)
+		chi2 += ((nu[i] - N * pi[i]) * (nu[i] - N * pi[i])) / (N * pi[i]);
+
+	pval = cephes_igamc((double)(K / 2.0), chi2 / 2.0);
+
+#ifdef VERIFY_RESULTS
+	R2.longestrunofones.N = N;
+	R2.longestrunofones.M = M;
+	R2.longestrunofones.chi2 = chi2;
+	for (i = 0; i < 7; i++) R2.longestrunofones.nu[i] = nu[i];
+	R2.longestrunofones.pval = pval;
+#endif
+
+#ifdef FILE_OUTPUT
+	fprintf(stats[TEST_LONGEST_RUN], "\t\t\t  LONGEST RUNS OF ONES TEST\n");
+	fprintf(stats[TEST_LONGEST_RUN], "\t\t---------------------------------------------\n");
+	fprintf(stats[TEST_LONGEST_RUN], "\t\tCOMPUTATIONAL INFORMATION:\n");
+	fprintf(stats[TEST_LONGEST_RUN], "\t\t---------------------------------------------\n");
+	fprintf(stats[TEST_LONGEST_RUN], "\t\t(a) N (# of substrings)  = %d\n", N);
+	fprintf(stats[TEST_LONGEST_RUN], "\t\t(b) M (Substring Length) = %d\n", M);
+	fprintf(stats[TEST_LONGEST_RUN], "\t\t(c) Chi^2                = %f\n", chi2);
+	fprintf(stats[TEST_LONGEST_RUN], "\t\t---------------------------------------------\n");
+	fprintf(stats[TEST_LONGEST_RUN], "\t\t      F R E Q U E N C Y\n");
+	fprintf(stats[TEST_LONGEST_RUN], "\t\t---------------------------------------------\n");
+
+	if (K == 3) {
+		fprintf(stats[TEST_LONGEST_RUN], "\t\t  <=1     2     3    >=4   P-value  Assignment");
+		fprintf(stats[TEST_LONGEST_RUN], "\n\t\t %3d %3d %3d  %3d ", nu[0], nu[1], nu[2], nu[3]);
+	}
+	else if (K == 5) {
+		fprintf(stats[TEST_LONGEST_RUN], "\t\t<=4  5  6  7  8  >=9 P-value  Assignment");
+		fprintf(stats[TEST_LONGEST_RUN], "\n\t\t %3d %3d %3d %3d %3d  %3d ", nu[0], nu[1], nu[2],
+			nu[3], nu[4], nu[5]);
+	}
+	else {
+		fprintf(stats[TEST_LONGEST_RUN], "\t\t<=10  11  12  13  14  15 >=16 P-value  Assignment");
+		fprintf(stats[TEST_LONGEST_RUN], "\n\t\t %3d %3d %3d %3d %3d %3d  %3d ", nu[0], nu[1], nu[2],
+			nu[3], nu[4], nu[5], nu[6]);
+	}
+	if (isNegative(pval) || isGreaterThanOne(pval))
 		fprintf(stats[TEST_LONGEST_RUN], "WARNING:  P_VALUE IS OUT OF RANGE.\n");
 
 	fprintf(stats[TEST_LONGEST_RUN], "%s\t\tp_value = %f\n\n", pval < ALPHA ? "FAILURE" : "SUCCESS", pval); fflush(stats[TEST_LONGEST_RUN]);

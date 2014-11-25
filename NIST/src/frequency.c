@@ -44,6 +44,38 @@ Frequency(int n)
 #endif
 }
 
+/* --------------------------------------------------------------------------
+
+The following code is distributed under the following BSD-style license:
+
+Copyright © 2013-2014 Marek Sys (syso@fi.muni.cz) & Zdenek Riha (zriha@fi.muni.cz).
+All Rights Reserved.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice, this
+list of conditions and the following disclaimer in the documentation and/or other
+materials provided with the distribution.
+
+3. The name of the author may not be used to endorse or promote products derived
+from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY AUTHORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+THE POSSIBILITY OF SUCH DAMAGE.
+
+-------------------------------------------------------------------------- */
+
 void
 Frequency2(int n)
 {
@@ -91,6 +123,67 @@ Frequency2(int n)
 	fprintf(stats[TEST_FREQUENCY], "\t\t---------------------------------------------\n");
 	fprintf(stats[TEST_FREQUENCY], "\t\t(a) The nth partial sum = %d\n", (int)sum);
 	fprintf(stats[TEST_FREQUENCY], "\t\t(b) S_n/n               = %f\n", sum/n);
+	fprintf(stats[TEST_FREQUENCY], "\t\t---------------------------------------------\n");
+
+	fprintf(stats[TEST_FREQUENCY], "%s\t\tp_value = %f\n\n", p_value < ALPHA ? "FAILURE" : "SUCCESS", p_value); fflush(stats[TEST_FREQUENCY]);
+	fprintf(results[TEST_FREQUENCY], "%f\n", p_value); fflush(results[TEST_FREQUENCY]);
+#endif
+}
+
+void
+Frequency3(int n)
+{
+	int int_sum, mask;
+	double	f, s_obs, p_value, sum, sqrt2 = 1.41421356237309504880;
+	unsigned char *p_tmp, *p_end;
+
+	int LUT_HW_size = 16;
+	int LUT_HW_Bsize = 2;
+	signed char *LUT_HW = LUT_HW_16;
+
+	if(1)
+	{
+		LUT_HW_size = 8;
+		LUT_HW_Bsize = 1;
+		LUT_HW = LUT_HW_8;
+	}
+
+	sum = 0.0;
+	int_sum = 0;
+	mask = get_mask(LUT_HW_size);
+
+	/*for (processed_bits = 0; processed_bits + LUT_HW_size < n + 1; processed_bits += LUT_HW_size){
+		int_sum += LUT_HW[get_block_fast(array, Boffset) & mask];
+		Boffset += LUT_HW_Bsize;
+	}*/
+
+	
+	p_end = array + (n- (n%LUT_HW_size))/8;
+	for (p_tmp = array; p_tmp < p_end; p_tmp += LUT_HW_Bsize){
+		int_sum += LUT_HW[*((unsigned int*)p_tmp) & mask];
+	}
+	if (n % LUT_HW_size){
+		int_sum += LUT_HW[ *((unsigned int*)p_tmp) & get_mask(n % LUT_HW_size)];
+	}
+
+	sum = int_sum - (n - int_sum);
+	s_obs = fabs(sum) / sqrt(n);
+	f = s_obs / sqrt2;
+	p_value = erfc(f);
+
+#ifdef VERIFY_RESULTS
+	R2.frequency.sum = sum;
+	R2.frequency.sum_n = sum / n;
+	R2.frequency.p_value = p_value;
+#endif
+
+#ifdef FILE_OUTPUT
+	fprintf(stats[TEST_FREQUENCY], "\t\t\t      FREQUENCY TEST\n");
+	fprintf(stats[TEST_FREQUENCY], "\t\t---------------------------------------------\n");
+	fprintf(stats[TEST_FREQUENCY], "\t\tCOMPUTATIONAL INFORMATION:\n");
+	fprintf(stats[TEST_FREQUENCY], "\t\t---------------------------------------------\n");
+	fprintf(stats[TEST_FREQUENCY], "\t\t(a) The nth partial sum = %d\n", (int)sum);
+	fprintf(stats[TEST_FREQUENCY], "\t\t(b) S_n/n               = %f\n", sum / n);
 	fprintf(stats[TEST_FREQUENCY], "\t\t---------------------------------------------\n");
 
 	fprintf(stats[TEST_FREQUENCY], "%s\t\tp_value = %f\n\n", p_value < ALPHA ? "FAILURE" : "SUCCESS", p_value); fflush(stats[TEST_FREQUENCY]);

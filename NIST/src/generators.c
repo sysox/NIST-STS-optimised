@@ -8,21 +8,9 @@
 #include "../include/generators.h"
 #include "../include/genutils.h"
 
-/*
-void convert_to_epsilon(BitSequence	*e, int n){
-	int i;
-
-	for(i = 0; i < n; i++)
-	{
-		if( (array[i >> 3] & (1 << (i & 7))) != 0)e[i]=1;
-		else e[i] = 0;
-	}
-}
-*/
 
 void convert_epsilon_to_array(int n)
 {
-//	unsigned char *e;
 
 	int byte_size,i,bytes,j;
 
@@ -41,16 +29,6 @@ void convert_epsilon_to_array(int n)
 		array[i]|=((epsilon[j])<<(j-(bytes<<3)));
 
 	array[i+1]=0; array[i+2]=0; array[i+3]=0;
-
-	/*
-	e=malloc(n+1000);
-	if(!e) exit(10);
-	convert_to_epsilon(e,n);
-
-	for(j=0;j<n;j++)
-		if(epsilon[j]!=e[j])
-		{ printf("STOP: inconsistent conversion.\n"); exit(11); }
-	*/
 
 }
 

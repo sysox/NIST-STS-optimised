@@ -59,19 +59,11 @@ int		computeMetrics(char *s, int test);
 int
 main(int argc, char *argv[])
 {
-	FILE *ftest,*ftest2;
-
-
-
-
-
-
-
 	int		i;
 	int		option;			/* TEMPLATE LENGTH/STREAM LENGTH/GENERATOR*/
 	char	*streamFile;	/* STREAM FILENAME     */
-	char tmp;	
 	
+
 	if ( (argc != 2  && argc != 3) || (argc==3 && strcmp(argv[2],"-fast") && strcmp(argv[2],"--fast")) ) {
 		printf("Usage: %s <stream length> [-fast]\n", argv[0]);
 		printf("   <stream length> is the length of the individual bit stream(s) to be processed\n");

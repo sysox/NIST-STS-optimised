@@ -19,7 +19,7 @@ extern signed char LUT_Cusum_max_positiv_8[], LUT_Cusum_max_negativ_8[], LUT_Cus
 extern signed char LUT_Cusum_max_positiv_16[], LUT_Cusum_max_negativ_16[], LUT_Cusum_16[];
 
 #ifdef VERIFY_RESULTS 
-extern struct results R1,R2;
+extern struct results R1,R2,R_;
 #endif
 
 // Original stuff

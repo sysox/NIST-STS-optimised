@@ -6,6 +6,7 @@
 #include "../include/utilities.h"
 #include "../include/cephes.h"  
 #include "../include/tools.h"  
+#include "../include/stat_fncs.h"
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -73,9 +74,11 @@ OverlappingTemplateMatchings(int m, int n)
 	p_value = cephes_igamc(K/2.0, chi2/2.0);
 	//printf("chi2:%lf value: %lf",chi2,p_value);
 #ifdef VERIFY_RESULTS
-	R1.overlapping.chi2=chi2;
-	R1.overlapping.p_value=p_value;
-	for(i=0;i<6;i++) R1.overlapping.nu[i]=nu[i];
+	R_.overlapping.chi2=chi2;
+	R_.overlapping.p_value=p_value;
+	for(i=0;i<6;i++) R_.overlapping.nu[i]=nu[i];
+	if(OverlappingTemplateMatchings_v1 == OverlappingTemplateMatchings) R1 = R_;
+	else R2 = R_;
 #endif
 #ifdef FILE_OUTPUT	
 	fprintf(stats[TEST_OVERLAPPING], "\t\t    OVERLAPPING TEMPLATE OF ALL ONES TEST\n");
@@ -206,11 +209,13 @@ OverlappingTemplateMatchingsX(int m, int n)
 	//printf("chi2:%lf value: %lf",chi2,p_value);
 
 #ifdef VERIFY_RESULTS
-	R2.overlapping.chi2=chi2;
-	R2.overlapping.p_value=p_value;
-	for(i=0;i<6;i++) R2.overlapping.nu[i]=nu[i];
+	R_.overlapping.chi2=chi2;
+	R_.overlapping.p_value=p_value;
+	for(i=0;i<6;i++) R_.overlapping.nu[i]=nu[i];
+	if(OverlappingTemplateMatchings_v1 == OverlappingTemplateMatchingsX) R1 = R_;
+	else R2 = R_;
 #endif
-	
+
 #ifdef FILE_OUTPUT
 	fprintf(stats[TEST_OVERLAPPING], "\t\t    OVERLAPPING TEMPLATE OF ALL ONES TEST\n");
 	fprintf(stats[TEST_OVERLAPPING], "\t\t-----------------------------------------------\n");
@@ -296,9 +301,11 @@ OverlappingTemplateMatchings2(int m, int n) // formerly _effective
 	//printf("chi2:%lf value: %lf",chi2,p_value);
 
 #ifdef VERIFY_RESULTS
-	R2.overlapping.chi2=chi2;
-	R2.overlapping.p_value=p_value;
-	for(i=0;i<6;i++) R2.overlapping.nu[i]=nu[i];
+	R_.overlapping.chi2=chi2;
+	R_.overlapping.p_value=p_value;
+	for(i=0;i<6;i++) R_.overlapping.nu[i]=nu[i];
+	if(OverlappingTemplateMatchings_v1 == OverlappingTemplateMatchings2) R1 = R_;
+	else R2 = R_;
 #endif
 
 #ifdef FILE_OUTPUT

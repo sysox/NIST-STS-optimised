@@ -4,6 +4,7 @@
 #include "../include/externs.h"
 #include "../include/cephes.h"
 #include "../include/tools.h"
+#include "../include/stat_fncs.h"
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
                     B L O C K  F R E Q U E N C Y  T E S T
@@ -35,8 +36,10 @@ BlockFrequency(int M, int n)
 	chi_squared = 4.0 * M * sum;
 	p_value = cephes_igamc(N/2.0, chi_squared/2.0);
 #ifdef VERIFY_RESULTS
-	R1.blockfrequency.chi_squared=chi_squared;
-	R1.blockfrequency.p_value=p_value;	
+	R_.blockfrequency.chi_squared=chi_squared;
+	R_.blockfrequency.p_value=p_value;	
+	if(BlockFrequency_v1 == BlockFrequency) R1 = R_;
+	else R2 = R_;
 #endif
 	//printf("%lf",sum);
 #ifdef FILE_OUTPUT
@@ -137,8 +140,10 @@ BlockFrequency2(int M, int n)
 	chi_squared = 4.0 * M * sum;
 	p_value = cephes_igamc(N/2.0, chi_squared/2.0);
 #ifdef VERIFY_RESULTS
-	R2.blockfrequency.chi_squared=chi_squared;
-	R2.blockfrequency.p_value=p_value;
+	R_.blockfrequency.chi_squared=chi_squared;
+	R_.blockfrequency.p_value=p_value;	
+	if(BlockFrequency_v1 == BlockFrequency2) R1 = R_;
+	else R2 = R_;
 #endif
 	//printf("%lf ",sum);
 
@@ -169,7 +174,8 @@ BlockFrequency3(int M, int n)
 	signed char *LUT_HW = LUT_HW_16;
 	unsigned char *p_tmp, *p_end;
 
-	if(1)
+	
+	if(0)
 	{
 		LUT_HW_size = 8;
 		LUT_HW_Bsize = 1;
@@ -206,8 +212,10 @@ BlockFrequency3(int M, int n)
 	chi_squared = 4.0 * M * sum;
 	p_value = cephes_igamc(N / 2.0, chi_squared / 2.0);
 #ifdef VERIFY_RESULTS
-	R2.blockfrequency.chi_squared = chi_squared;
-	R2.blockfrequency.p_value = p_value;
+	R_.blockfrequency.chi_squared=chi_squared;
+	R_.blockfrequency.p_value=p_value;	
+	if(BlockFrequency_v1 == BlockFrequency3) R1 = R_;
+	else R2 = R_;
 #endif
 	//printf("%lf ",sum);
 

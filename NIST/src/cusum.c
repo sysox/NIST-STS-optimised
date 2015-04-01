@@ -5,6 +5,7 @@
 #include "../include/externs.h"
 #include "../include/cephes.h"
 #include "../include/tools.h"  
+#include "../include/stat_fncs.h"
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 		    C U M U L A T I V E  S U M S  T E S T
@@ -32,9 +33,10 @@ CumulativeSums(int n)
 	
 	//printf("%d %d", z, zrev);
 #ifdef VERIFY_RESULTS
-	R1.cusum.z=z;
-	R1.cusum.zrev=zrev;
+	R_.cusum.z=z;
+	R_.cusum.zrev=zrev;
 #endif
+
 
 	// forward
 	sum1 = 0.0;
@@ -50,9 +52,9 @@ CumulativeSums(int n)
 
 	p_value = 1.0 - sum1 + sum2;
 #ifdef VERIFY_RESULTS
-	R1.cusum.p_valueA=p_value;
-	R1.cusum.sum1A=sum1;
-	R1.cusum.sum2A=sum2;
+	R_.cusum.p_valueA=p_value;
+	R_.cusum.sum1A=sum1;
+	R_.cusum.sum2A=sum2;
 #endif
 	
 #ifdef FILE_OUTPUT
@@ -82,9 +84,11 @@ CumulativeSums(int n)
 	}
 	p_value = 1.0 - sum1 + sum2;
 #ifdef VERIFY_RESULTS
-	R1.cusum.p_valueB=p_value;
-	R1.cusum.sum1B=sum1;
-	R1.cusum.sum2B=sum2;
+	R_.cusum.p_valueB=p_value;
+	R_.cusum.sum1B=sum1;
+	R_.cusum.sum2B=sum2;
+	if(CumulativeSums_v1 == CumulativeSums) R1 = R_;
+	else R2 = R_;
 #endif
 
 #ifdef FILE_OUTPUT
@@ -177,8 +181,8 @@ unsigned int window;
 	zrev = (sup-S > S-inf) ? sup-S : S-inf;
 
 #ifdef VERIFY_RESULTS
-	R2.cusum.z=z;
-	R2.cusum.zrev=zrev;
+	R_.cusum.z=z;
+	R_.cusum.zrev=zrev;
 #endif
 
 	//printf("z = %d zrev=%d S= %d", z, zrev,S);
@@ -197,9 +201,9 @@ unsigned int window;
 
 	p_value = 1.0 - sum1 + sum2;
 #ifdef VERIFY_RESULTS	
-	R2.cusum.p_valueA=p_value;
-	R2.cusum.sum1A=sum1;
-	R2.cusum.sum2A=sum2;
+	R_.cusum.p_valueA=p_value;
+	R_.cusum.sum1A=sum1;
+	R_.cusum.sum2A=sum2;
 #endif
 
 #ifdef FILE_OUTPUT
@@ -228,10 +232,12 @@ unsigned int window;
 		sum2 -= cephes_normal(((4*k+1)*zrev)/sqrt(n));
 	}
 	p_value = 1.0 - sum1 + sum2;
-#ifdef VERIFY_RESULTS	
-	R2.cusum.p_valueB=p_value;
-	R2.cusum.sum1B=sum1;
-	R2.cusum.sum2B=sum2;
+#ifdef VERIFY_RESULTS
+	R_.cusum.p_valueB=p_value;
+	R_.cusum.sum1B=sum1;
+	R_.cusum.sum2B=sum2;
+	if(CumulativeSums_v1 == CumulativeSums2) R1 = R_;
+	else R2 = R_;
 #endif
 
 #ifdef FILE_OUTPUT
@@ -264,7 +270,7 @@ CumulativeSums3(int n)
 	signed char *LUT_Cusum_max_negativ = LUT_Cusum_max_negativ_16;
 	unsigned char *p_tmp, *p_end;
 
-	if(1)
+	if(0)
 	{
 		LUT_Cusum_size = 8;
 		LUT_Cusum_Bsize = 1;
@@ -315,8 +321,8 @@ CumulativeSums3(int n)
 	zrev = (sup - S > S - inf) ? sup - S : S - inf;
 
 #ifdef VERIFY_RESULTS
-	R2.cusum.z = z;
-	R2.cusum.zrev = zrev;
+	R_.cusum.z = z;
+	R_.cusum.zrev = zrev;
 #endif
 
 	//printf("z = %d zrev=%d S= %d", z, zrev,S);
@@ -335,9 +341,9 @@ CumulativeSums3(int n)
 
 	p_value = 1.0 - sum1 + sum2;
 #ifdef VERIFY_RESULTS	
-	R2.cusum.p_valueA = p_value;
-	R2.cusum.sum1A = sum1;
-	R2.cusum.sum2A = sum2;
+	R_.cusum.p_valueA = p_value;
+	R_.cusum.sum1A = sum1;
+	R_.cusum.sum2A = sum2;
 #endif
 
 #ifdef FILE_OUTPUT
@@ -366,10 +372,12 @@ CumulativeSums3(int n)
 		sum2 -= cephes_normal(((4 * k + 1)*zrev) / sqrt(n));
 	}
 	p_value = 1.0 - sum1 + sum2;
-#ifdef VERIFY_RESULTS	
-	R2.cusum.p_valueB = p_value;
-	R2.cusum.sum1B = sum1;
-	R2.cusum.sum2B = sum2;
+#ifdef VERIFY_RESULTS
+	R_.cusum.p_valueB=p_value;
+	R_.cusum.sum1B=sum1;
+	R_.cusum.sum2B=sum2;
+	if(CumulativeSums_v1 == CumulativeSums3) R1 = R_;
+	else R2 = R_;
 #endif
 
 #ifdef FILE_OUTPUT

@@ -6,6 +6,7 @@
 #include "../include/cephes.h"
 #include "../include/erf.h"
 #include "../include/tools.h"
+#include "../include/stat_fncs.h"
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -35,10 +36,10 @@ Runs(int n)
 		p_value = 0.0;
 		
 #ifdef VERIFY_RESULTS
-		R1.runs.p_value=p_value;
-		R1.runs.pi=pi;
-		R1.runs.V=0.0;
-		R1.runs.erfc_arg=0.0;
+		R_.runs.p_value=p_value;
+		R_.runs.pi=pi;
+		R_.runs.V=0.0;
+		R_.runs.erfc_arg=0.0;
 #endif
 	}
 	else {
@@ -52,10 +53,12 @@ Runs(int n)
 		p_value = erfc(erfc_arg);
 		
 #ifdef VERIFY_RESULTS
-		R1.runs.p_value=p_value;
-		R1.runs.pi=pi;
-		R1.runs.V=V;
-		R1.runs.erfc_arg=erfc_arg;
+		R_.runs.p_value=p_value;
+		R_.runs.pi=pi;
+		R_.runs.V=V;
+		R_.runs.erfc_arg=erfc_arg;
+		if(Runs_v1 == Runs) R1 = R_;
+		else R2 = R_;
 #endif
 
 #ifdef FILE_OUTPUT
@@ -160,10 +163,10 @@ Runs2(int n)
 		p_value = 0.0;
 
 #ifdef VERIFY_RESULTS
-		R2.runs.p_value=p_value;
-		R2.runs.pi=pi;
-		R2.runs.V=0.0;
-		R2.runs.erfc_arg=0.0;
+		R_.runs.p_value=p_value;
+		R_.runs.pi=pi;
+		R_.runs.V=0.0;
+		R_.runs.erfc_arg=0.0;
 #endif
 
 
@@ -191,10 +194,12 @@ Runs2(int n)
 	p_value = erfc(erfc_arg);
 
 #ifdef VERIFY_RESULTS
-	R2.runs.p_value=p_value;
-	R2.runs.pi=pi;
-	R2.runs.V=V;
-	R2.runs.erfc_arg=erfc_arg;
+		R_.runs.p_value=p_value;
+		R_.runs.pi=pi;
+		R_.runs.V=V;
+		R_.runs.erfc_arg=erfc_arg;
+		if(Runs_v1 == Runs2) R1 = R_;
+		else R2 = R_;
 #endif
 		
 #ifdef FILE_OUTPUT
@@ -219,7 +224,7 @@ Runs2(int n)
 	fprintf(results[TEST_RUNS], "%f\n", p_value); fflush(results[TEST_RUNS]);
 #endif
 	
-	//printf("R2: %d %lf \n",S,(double)V);
+	//printf("R_: %d %lf \n",S,(double)V);
 	
 }
 
@@ -241,7 +246,7 @@ Runs3(int n)
 	int LUT_Switches_Bsize = 2;
 	signed char *LUT_Switches = LUT_Switches_16;
 	
-	if(1)
+	if(0)
 	{
 		LUT_HW_size = 8;
 		LUT_HW_Bsize = 1;
@@ -276,10 +281,10 @@ Runs3(int n)
 		p_value = 0.0;
 
 #ifdef VERIFY_RESULTS
-		R2.runs.p_value = p_value;
-		R2.runs.pi = pi;
-		R2.runs.V = 0.0;
-		R2.runs.erfc_arg = 0.0;
+		R_.runs.p_value = p_value;
+		R_.runs.pi = pi;
+		R_.runs.V = 0.0;
+		R_.runs.erfc_arg = 0.0;
 #endif
 
 
@@ -312,10 +317,12 @@ Runs3(int n)
 		p_value = erfc(erfc_arg);
 
 #ifdef VERIFY_RESULTS
-		R2.runs.p_value = p_value;
-		R2.runs.pi = pi;
-		R2.runs.V = V;
-		R2.runs.erfc_arg = erfc_arg;
+		R_.runs.p_value=p_value;
+		R_.runs.pi=pi;
+		R_.runs.V=V;
+		R_.runs.erfc_arg=erfc_arg;
+		if(Runs_v1 == Runs3) R1 = R_;
+		else R2 = R_;
 #endif
 
 #ifdef FILE_OUTPUT
@@ -340,6 +347,6 @@ Runs3(int n)
 	fprintf(results[TEST_RUNS], "%f\n", p_value); fflush(results[TEST_RUNS]);
 #endif
 
-	//printf("R2: %d %lf \n",S,(double)V);
+	//printf("R_: %d %lf \n",S,(double)V);
 
 }

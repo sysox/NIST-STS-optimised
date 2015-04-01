@@ -4,6 +4,7 @@
 #include "../include/externs.h"
 #include "../include/erf.h"
 #include "../include/tools.h"
+#include "../include/stat_fncs.h"
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
                           F R E Q U E N C Y  T E S T
@@ -25,10 +26,13 @@ Frequency(int n)
 	//printf("Pval: %lf\n",p_value);
 	//printf("%lf ",sum);
 #ifdef VERIFY_RESULTS
-	R1.frequency.sum=sum;
-	R1.frequency.sum_n=sum/n;
-	R1.frequency.p_value=p_value;
+	R_.frequency.sum=sum;
+	R_.frequency.sum_n=sum/n;
+	R_.frequency.p_value=p_value;
+	if(Frequency_v1 == Frequency) R1 = R_;
+	else R2 = R_;
 #endif
+
 	
 #ifdef FILE_OUTPUT
 	fprintf(stats[TEST_FREQUENCY], "\t\t\t      FREQUENCY TEST\n");
@@ -111,9 +115,11 @@ Frequency2(int n)
 	//printf("Pval: %lf\n",p_value);
 	//printf("%lf ",(double)sum);
 #ifdef VERIFY_RESULTS
-	R2.frequency.sum=sum;
-	R2.frequency.sum_n=sum/n;
-	R2.frequency.p_value=p_value;
+	R_.frequency.sum=sum;
+	R_.frequency.sum_n=sum/n;
+	R_.frequency.p_value=p_value;
+	if(Frequency_v1 == Frequency2) R1 = R_;
+	else R2 = R_;
 #endif
 
 #ifdef FILE_OUTPUT
@@ -141,7 +147,7 @@ Frequency3(int n)
 	int LUT_HW_Bsize = 2;
 	signed char *LUT_HW = LUT_HW_16;
 
-	if(1)
+	if(0)
 	{
 		LUT_HW_size = 8;
 		LUT_HW_Bsize = 1;
@@ -172,9 +178,11 @@ Frequency3(int n)
 	p_value = erfc(f);
 
 #ifdef VERIFY_RESULTS
-	R2.frequency.sum = sum;
-	R2.frequency.sum_n = sum / n;
-	R2.frequency.p_value = p_value;
+	R_.frequency.sum=sum;
+	R_.frequency.sum_n=sum/n;
+	R_.frequency.p_value=p_value;
+	if(Frequency_v1 == Frequency3) R1 = R_;
+	else R2 = R_;
 #endif
 
 #ifdef FILE_OUTPUT

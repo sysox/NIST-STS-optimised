@@ -7,6 +7,7 @@
 #include "../include/utilities.h"
 #include "../include/cephes.h"
 #include "../include/tools.h"
+#include "../include/stat_fncs.h"
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
                          U N I V E R S A L  T E S T
@@ -103,10 +104,13 @@ Universal(int n)
 	p_value = erfc(arg);
 
 #ifdef VERIFY_RESULTS
-	R1.universal.p_value=p_value;
-	R1.universal.sum=sum;
-	R1.universal.phi=phi;
+	R_.universal.p_value=p_value;
+	R_.universal.sum=sum;
+	R_.universal.phi=phi;
+	if(Universal_v1 == Universal) R1 = R_;
+	else R2 = R_;
 #endif
+
 #ifdef FILE_OUTPUT
 	if ( isNegative(p_value) || isGreaterThanOne(p_value) )
 		fprintf(stats[TEST_UNIVERSAL], "\t\tWARNING:  P_VALUE IS OUT OF RANGE\n");
@@ -238,9 +242,11 @@ Universal2(int n)
 	p_value = erfc(arg);
 
 #ifdef VERIFY_RESULTS
-	R2.universal.p_value=p_value;
-	R2.universal.sum=sum;
-	R2.universal.phi=phi;
+	R_.universal.p_value=p_value;
+	R_.universal.sum=sum;
+	R_.universal.phi=phi;
+	if(Universal_v1 == Universal2) R1 = R_;
+	else R2 = R_;
 #endif
 
 #ifdef FILE_OUTPUT

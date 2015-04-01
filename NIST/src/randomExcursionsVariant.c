@@ -6,6 +6,7 @@
 #include "../include/cephes.h"
 #include "../include/erf.h"
 #include "../include/tools.h"
+#include "../include/stat_fncs.h"
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -20,7 +21,7 @@ RandomExcursionsVariant(int n)
 	double	p_value;
 
 #ifdef VERIFY_RESULTS
-	R1.random_excursion_variant.valid=0;
+	R_.random_excursion_variant.valid=0;
 #endif
 
 	
@@ -80,10 +81,12 @@ RandomExcursionsVariant(int n)
 #endif
 
 #ifdef VERIFY_RESULTS
-			R1.random_excursion_variant.valid=1;
-			R1.random_excursion_variant.x[p]=x;
-			R1.random_excursion_variant.count[p]=count;
-			R1.random_excursion_variant.p_value[p]=p_value;
+			R_.random_excursion_variant.valid=1;
+			R_.random_excursion_variant.x[p]=x;
+			R_.random_excursion_variant.count[p]=count;
+			R_.random_excursion_variant.p_value[p]=p_value;
+			if(RandomExcursionsVariant_v1 == RandomExcursionsVariant) R1 = R_;
+			else R2 = R_;	
 #endif
 
 		}
@@ -138,7 +141,7 @@ RandomExcursionsVariant2(int n)
 	int counter[19] = { 0, 0, 0, 0, 0, 0 , 0, 0, 0,  0, 0, 0, 0, 0, 0 , 0, 0, 0, 0 };
 
 #ifdef VERIFY_RESULTS
-	R2.random_excursion_variant.valid=0;
+	R_.random_excursion_variant.valid=0;
 #endif
 
 		for ( bit_ind = 0; bit_ind < n; bit_ind++ )
@@ -189,10 +192,12 @@ RandomExcursionsVariant2(int n)
 			p_value = erfc(fabs(count-J)/(sqrt(2.0*J*(4.0*fabs(x)-2))));
 
 #ifdef VERIFY_RESULTS
-			R2.random_excursion_variant.valid=1;
-			R2.random_excursion_variant.x[p]=x;
-			R2.random_excursion_variant.count[p]=count;
-			R2.random_excursion_variant.p_value[p]=p_value;
+			R_.random_excursion_variant.valid=1;
+			R_.random_excursion_variant.x[p]=x;
+			R_.random_excursion_variant.count[p]=count;
+			R_.random_excursion_variant.p_value[p]=p_value;
+			if(RandomExcursionsVariant_v1 == RandomExcursionsVariant2) R1 = R_;
+			else R2 = R_;	
 #endif
 
 #ifdef FILE_OUTPUT

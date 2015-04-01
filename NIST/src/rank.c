@@ -5,11 +5,12 @@
 #include "../include/externs.h"
 #include "../include/cephes.h"
 #include "../include/matrix.h"
+#include "../include/stat_fncs.h"
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
                               R A N K  T E S T
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
+	
 void
 Rank(int n)
 {
@@ -88,15 +89,18 @@ Rank(int n)
 		free(matrix);
 
 #ifdef VERIFY_RESULTS
-		R1.rank.p_30=p_30;
-		R1.rank.p_31=p_31;
-		R1.rank.p_32=p_32;
-		R1.rank.F_30=F_30;
-		R1.rank.F_31=F_31;
-		R1.rank.F_32=F_32;
-		R1.rank.chi_squared=chi_squared;
-		R1.rank.p_value=p_value;
-		R1.rank.N=N;
+		R_.rank.p_30=p_30;
+		R_.rank.p_31=p_31;
+		R_.rank.p_32=p_32;
+		R_.rank.F_30=F_30;
+		R_.rank.F_31=F_31;
+		R_.rank.F_32=F_32;
+		R_.rank.chi_squared=chi_squared;
+		R_.rank.p_value=p_value;
+		R_.rank.N=N;
+		if(Rank_v1 == Rank) R1 = R_;
+		else R2 = R_;
+
 #endif
 	}
 #ifdef FILE_OUTPUT
@@ -226,15 +230,18 @@ Rank2(int n){
 #endif
 
 #ifdef VERIFY_RESULTS
-	R2.rank.p_30=p_30;
-	R2.rank.p_31=p_31;
-	R2.rank.p_32=p_32;
-	R2.rank.F_30=F_30;
-	R2.rank.F_31=F_31;
-	R2.rank.F_32=F_32;
-	R2.rank.chi_squared=chi_squared;
-	R2.rank.p_value=p_value;
-	R2.rank.N=N;
+		R_.rank.p_30=p_30;
+		R_.rank.p_31=p_31;
+		R_.rank.p_32=p_32;
+		R_.rank.F_30=F_30;
+		R_.rank.F_31=F_31;
+		R_.rank.F_32=F_32;
+		R_.rank.chi_squared=chi_squared;
+		R_.rank.p_value=p_value;
+		R_.rank.N=N;
+		if(Rank_v1 == Rank2) R1 = R_;
+		else R2 = R_;
+
 #endif
 
 #ifdef FILE_OUTPUT

@@ -7,6 +7,7 @@
 #include "../include/cephes.h"
 #include "../include/erf.h"
 #include "../include/tools.h"
+#include "../include/stat_fncs.h"
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
          D I S C R E T E  F O U R I E R  T R A N S F O R M  T E S T 
@@ -75,11 +76,13 @@ DiscreteFourierTransform(int n)
 #endif
 
 #ifdef VERIFY_RESULTS
-	R1.dft.p_value=p_value;
-	R1.dft.percentile=percentile;
-	R1.dft.N_l=N_l;
-	R1.dft.N_o=N_o;
-	R1.dft.d=d;
+	R_.dft.p_value=p_value;
+	R_.dft.percentile=percentile;
+	R_.dft.N_l=N_l;
+	R_.dft.N_o=N_o;
+	R_.dft.d=d;
+	if(DiscreteFourierTransform_v1 == DiscreteFourierTransform) R1 = R_;
+	else R2 = R_;
 #endif
 
 	free(X);
@@ -181,11 +184,13 @@ DiscreteFourierTransform2(int n)
 #endif
 
 #ifdef VERIFY_RESULTS
-	R2.dft.p_value=p_value;
-	R2.dft.percentile=percentile;
-	R2.dft.N_l=N_l;
-	R2.dft.N_o=N_o;
-	R2.dft.d=d;
+	R_.dft.p_value=p_value;
+	R_.dft.percentile=percentile;
+	R_.dft.N_l=N_l;
+	R_.dft.N_o=N_o;
+	R_.dft.d=d;
+	if(DiscreteFourierTransform_v1 == DiscreteFourierTransform2) R1 = R_;
+	else R2 = R_;
 #endif
 
 	free(X);
@@ -193,7 +198,7 @@ DiscreteFourierTransform2(int n)
 	free(m);
 }
 
-/*
+
 
 #include "../include/fftw3.h"
 
@@ -265,17 +270,20 @@ DiscreteFourierTransform3(int n)
 #endif
 
 #ifdef VERIFY_RESULTS
-	R2.dft.p_value = p_value;
-	R2.dft.percentile = percentile;
-	R2.dft.N_l = N_l;
-	R2.dft.N_o = N_o;
-	R2.dft.d = d;
+	R_.dft.p_value=p_value;
+	R_.dft.percentile=percentile;
+	R_.dft.N_l=N_l;
+	R_.dft.N_o=N_o;
+	R_.dft.d=d;
+	if(DiscreteFourierTransform_v1 == DiscreteFourierTransform3) R1 = R_;
+	else R2 = R_;
 #endif
 
 	fftw_free(in);
 	fftw_free(out);
 	free(m);
 }
+
 
 void
 DiscreteFourierTransform4(int n)
@@ -345,11 +353,13 @@ DiscreteFourierTransform4(int n)
 #endif
 
 #ifdef VERIFY_RESULTS
-	R2.dft.p_value = p_value;
-	R2.dft.percentile = percentile;
-	R2.dft.N_l = N_l;
-	R2.dft.N_o = N_o;
-	R2.dft.d = d;
+	R_.dft.p_value=p_value;
+	R_.dft.percentile=percentile;
+	R_.dft.N_l=N_l;
+	R_.dft.N_o=N_o;
+	R_.dft.d=d;
+	if(DiscreteFourierTransform_v1 == DiscreteFourierTransform4) R1 = R_;
+	else R2 = R_;
 #endif
 
 	fftw_free(in);
@@ -357,4 +367,4 @@ DiscreteFourierTransform4(int n)
 	free(m);
 }
 
-*/
+

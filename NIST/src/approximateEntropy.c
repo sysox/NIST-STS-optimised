@@ -6,6 +6,7 @@
 #include "../include/utilities.h"
 #include "../include/cephes.h"  
 #include "../include/tools.h"  
+#include "../include/stat_fncs.h"
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
                 A P P R O X I M A T E  E N T R O P Y   T E S T
@@ -33,8 +34,8 @@ ApproximateEntropy(int m, int n)
 	r = 0;
 
 #ifdef VERIFY_RESULTS
-	R1.approximate_entropy.P=malloc(sizeof(unsigned int)*(1<<(m+1))*2);
-	if(R1.approximate_entropy.P==NULL) {printf("Approximate entropy test: Cannot allocate memory.\n"); return; }
+	R_.approximate_entropy.P=malloc(sizeof(unsigned int)*(1<<(m+1))*2);
+	if(R_.approximate_entropy.P==NULL) {printf("Approximate entropy test: Cannot allocate memory.\n"); return; }
 #endif
 
 	for ( blockSize=m; blockSize<=m+1; blockSize++ ) {
@@ -75,12 +76,12 @@ ApproximateEntropy(int m, int n)
 					sum += P[index]*log(P[index]/numOfBlocks);
 				//printf("[%i: %d] ",index,P[index]);
 #ifdef VERIFY_RESULTS
-				R1.approximate_entropy.P[cc++]=P[index];
+				R_.approximate_entropy.P[cc++]=P[index];
 #endif
 				index++;				
 			}
 #ifdef VERIFY_RESULTS
-			R1.approximate_entropy.pp=cc;
+			R_.approximate_entropy.pp=cc;
 #endif
 
 			sum /= numOfBlocks;
@@ -98,10 +99,12 @@ ApproximateEntropy(int m, int n)
 	p_value = cephes_igamc(pow(2, m-1), chi_squared/2.0);
 
 #ifdef VERIFY_RESULTS
-	R1.approximate_entropy.p_value=p_value;
-	R1.approximate_entropy.chi_squared=chi_squared;
-	R1.approximate_entropy.ApEn[0]=ApEn[0];
-	R1.approximate_entropy.ApEn[1]=ApEn[1];
+	R_.approximate_entropy.p_value=p_value;
+	R_.approximate_entropy.chi_squared=chi_squared;
+	R_.approximate_entropy.ApEn[0]=ApEn[0];
+	R_.approximate_entropy.ApEn[1]=ApEn[1];
+	if(ApproximateEntropy_v1 == ApproximateEntropy) R1 = R_;
+	else R2 = R_;
 #endif
 
 
@@ -188,8 +191,8 @@ ApproximateEntropy2(int m, int n)
 	len = (1 << m);
 
 #ifdef VERIFY_RESULTS
-	R2.approximate_entropy.P=malloc(sizeof(unsigned int)*len*2);
-	if(R2.approximate_entropy.P==NULL) {printf("Approximate entropy test: Cannot allocate memory.\n"); return; }
+	R_.approximate_entropy.P=malloc(sizeof(unsigned int)*len*2);
+	if(R_.approximate_entropy.P==NULL) {printf("Approximate entropy test: Cannot allocate memory.\n"); return; }
 #endif
 		
 	if ( (P = (unsigned int*)calloc(len,sizeof(unsigned int)))== NULL ) {
@@ -221,7 +224,7 @@ ApproximateEntropy2(int m, int n)
 		if ( help > 0 )
 			sum += help*log(help/numOfBlocks);
 #ifdef VERIFY_RESULTS
-		R2.approximate_entropy.P[cc++]=help;
+		R_.approximate_entropy.P[cc++]=help;
 #endif
 		//printf("%i ",help);	
 	}
@@ -236,11 +239,11 @@ ApproximateEntropy2(int m, int n)
 			sum += P[i]*log(P[i]/numOfBlocks);
 		//printf("[%d: %d] ",i,P[Mirrored_int(i,m)]);	
 #ifdef VERIFY_RESULTS
-		R2.approximate_entropy.P[cc++]=P[Mirrored_int(i,m)];
+		R_.approximate_entropy.P[cc++]=P[Mirrored_int(i,m)];
 #endif
 	}
 #ifdef VERIFY_RESULTS
-	R2.approximate_entropy.pp=cc;
+	R_.approximate_entropy.pp=cc;
 #endif
 	
 	sum /= numOfBlocks;
@@ -257,10 +260,12 @@ ApproximateEntropy2(int m, int n)
 	p_value = cephes_igamc(pow(2, m-2), chi_squared/2.0);
 
 #ifdef VERIFY_RESULTS
-	R2.approximate_entropy.p_value=p_value;
-	R2.approximate_entropy.chi_squared=chi_squared;
-	R2.approximate_entropy.ApEn[0]=ApEn[0];
-	R2.approximate_entropy.ApEn[1]=ApEn[1];
+	R_.approximate_entropy.p_value=p_value;
+	R_.approximate_entropy.chi_squared=chi_squared;
+	R_.approximate_entropy.ApEn[0]=ApEn[0];
+	R_.approximate_entropy.ApEn[1]=ApEn[1];
+	if(ApproximateEntropy_v1 == ApproximateEntropy2) R1 = R_;
+	else R2 = R_;
 #endif
 
 	//printf("P-value %lf \n",p_value);

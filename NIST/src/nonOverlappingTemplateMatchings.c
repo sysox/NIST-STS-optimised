@@ -5,7 +5,8 @@
 #include "../include/externs.h"
 #include "../include/utilities.h"
 #include "../include/cephes.h"  
-#include "../include/tools.h"  
+#include "../include/tools.h" 
+#include "../include/stat_fncs.h"
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
           N O N O V E R L A P P I N G  T E M P L A T E  T E S T
@@ -58,10 +59,10 @@ NonOverlappingTemplateMatchings(int m, int n)
 			free(sequence);
 
 #ifdef VERIFY_RESULTS
-		R1.nonoverlapping.templates=0;
-		R1.nonoverlapping.W=NULL;
-		R1.nonoverlapping.chi2=NULL;
-		R1.nonoverlapping.p_value=NULL;
+		R_.nonoverlapping.templates=0;
+		R_.nonoverlapping.W=NULL;
+		R_.nonoverlapping.chi2=NULL;
+		R_.nonoverlapping.p_value=NULL;
 #endif
 	}
 	else {
@@ -84,11 +85,11 @@ NonOverlappingTemplateMatchings(int m, int n)
 		numOfTemplates[m] = (int)numOfTemplates[m]/SKIP;
 
 #ifdef VERIFY_RESULTS
-		R1.nonoverlapping.templates=MIN(MAXNUMOFTEMPLATES, numOfTemplates[m]);
-		R1.nonoverlapping.W=(unsigned int*)malloc(sizeof(unsigned int)*R1.nonoverlapping.templates*8);
-		R1.nonoverlapping.chi2=(double *)malloc(sizeof(double)*R1.nonoverlapping.templates);
-		R1.nonoverlapping.p_value=(double *)malloc(sizeof(double)*R1.nonoverlapping.templates);
-		if(R1.nonoverlapping.W==NULL||R1.nonoverlapping.chi2==NULL||R1.nonoverlapping.p_value==NULL)
+		R_.nonoverlapping.templates=MIN(MAXNUMOFTEMPLATES, numOfTemplates[m]);
+		R_.nonoverlapping.W=(unsigned int*)malloc(sizeof(unsigned int)*R_.nonoverlapping.templates*8);
+		R_.nonoverlapping.chi2=(double *)malloc(sizeof(double)*R_.nonoverlapping.templates);
+		R_.nonoverlapping.p_value=(double *)malloc(sizeof(double)*R_.nonoverlapping.templates);
+		if(R_.nonoverlapping.W==NULL||R_.nonoverlapping.chi2==NULL||R_.nonoverlapping.p_value==NULL)
 		{ printf("NONOVERLAPPING TEMPLATES TEST: Cannot allocate memory"); return; }
 #endif
 		
@@ -151,7 +152,7 @@ NonOverlappingTemplateMatchings(int m, int n)
 				else
 					printf("%4d ", Wj[i]);*/
 #ifdef VERIFY_RESULTS
-				R1.nonoverlapping.W[jj*N+i]=Wj[i];
+				R_.nonoverlapping.W[jj*N+i]=Wj[i];
 #endif
 				//
 				chi2 += pow(((double)Wj[i] - lambda)/pow(varWj, 0.5), 2);
@@ -159,8 +160,11 @@ NonOverlappingTemplateMatchings(int m, int n)
 			p_value = cephes_igamc(N/2.0, chi2/2.0);
 			//printf("(1) chi2:%lf value: %lf\n",chi2,p_value);
 #ifdef VERIFY_RESULTS
-			R1.nonoverlapping.chi2[jj]=chi2;
-			R1.nonoverlapping.p_value[jj]=p_value;
+			R_.nonoverlapping.chi2[jj]=chi2;
+			R_.nonoverlapping.p_value[jj]=p_value;
+
+			if(NonOverlappingTemplateMatchings_v1 == NonOverlappingTemplateMatchings) R1 = R_;
+			else R2 = R_;
 #endif
 			
 #ifdef FILE_OUTPUT
@@ -314,32 +318,32 @@ NonOverlappingTemplateMatchings2(int m, int n)
 		//	printf("NONOVERLAPPING TEMPLATES TESTS: Cannot open templates file.\n"); 
 
 #ifdef VERIFY_RESULTS
-		R2.nonoverlapping.templates=0;
-		R2.nonoverlapping.W=(unsigned int*)malloc(sizeof(unsigned int)*R2.nonoverlapping.templates*8);
-		R2.nonoverlapping.chi2=(double *)malloc(sizeof(double)*R2.nonoverlapping.templates);
-		R2.nonoverlapping.p_value=(double *)malloc(sizeof(double)*R2.nonoverlapping.templates);
-		if(R2.nonoverlapping.W==NULL||R2.nonoverlapping.chi2==NULL||R2.nonoverlapping.p_value==NULL)
+		R_.nonoverlapping.templates=0;
+		R_.nonoverlapping.W=(unsigned int*)malloc(sizeof(unsigned int)*R_.nonoverlapping.templates*8);
+		R_.nonoverlapping.chi2=(double *)malloc(sizeof(double)*R_.nonoverlapping.templates);
+		R_.nonoverlapping.p_value=(double *)malloc(sizeof(double)*R_.nonoverlapping.templates);
+		if(R_.nonoverlapping.W==NULL||R_.nonoverlapping.chi2==NULL||R_.nonoverlapping.p_value==NULL)
 		{ printf("NONOVERLAPPING TEMPLATES TEST: Cannot allocate memory"); return; }
 #endif
 	}
 	else
 	{	
 #ifdef VERIFY_RESULTS
-		R2.nonoverlapping.templates=MIN(numoftemplates,MAXNUMOFTEMPLATES);
-		R2.nonoverlapping.W=(unsigned int*)malloc(sizeof(unsigned int)*R2.nonoverlapping.templates*8);
-		if(R2.nonoverlapping.W==NULL)
+		R_.nonoverlapping.templates=MIN(numoftemplates,MAXNUMOFTEMPLATES);
+		R_.nonoverlapping.W=(unsigned int*)malloc(sizeof(unsigned int)*R_.nonoverlapping.templates*8);
+		if(R_.nonoverlapping.W==NULL)
 		{
 			printf("NONOVERLAPPING TEMPLATES TESTS: Cannot allocate memory.\n"); 
 			return; 
 		}
-		R2.nonoverlapping.chi2=(double *)malloc(sizeof(double)*R2.nonoverlapping.templates);
-		if(R2.nonoverlapping.chi2==NULL)
+		R_.nonoverlapping.chi2=(double *)malloc(sizeof(double)*R_.nonoverlapping.templates);
+		if(R_.nonoverlapping.chi2==NULL)
 		{ 
 			printf("NONOVERLAPPING TEMPLATES TESTS: Cannot allocate memory.\n"); 
 			return; 
 		}
-		R2.nonoverlapping.p_value=(double *)malloc(sizeof(double)*R2.nonoverlapping.templates);
-		if(R2.nonoverlapping.p_value==NULL) 
+		R_.nonoverlapping.p_value=(double *)malloc(sizeof(double)*R_.nonoverlapping.templates);
+		if(R_.nonoverlapping.p_value==NULL) 
 		{ 
 			printf("NONOVERLAPPING TEMPLATES TESTS: Cannot allocate memory.\n"); 
 			return; 
@@ -446,28 +450,22 @@ NonOverlappingTemplateMatchings2(int m, int n)
 					printf("%4d ", Wj[i][one_template]);*/
 
 #ifdef VERIFY_RESULTS
-				//if((j/SKIP)>=R2.nonoverlapping.templates) printf("!!!\n");
-				R2.nonoverlapping.W[(j/SKIP)*N+i]=Wj[i][one_template];
+				//if((j/SKIP)>=R_.nonoverlapping.templates) printf("!!!\n");
+				R_.nonoverlapping.W[(j/SKIP)*N+i]=Wj[i][one_template];
 #endif
 			
 			}
 			p_value = cephes_igamc(N/2.0, chi2/2.0);
 			//printf("(2) chi2:%lf value: %lf\n",chi2,p_value);
-			
 #ifdef VERIFY_RESULTS
-			//if((j/SKIP)>=R2.nonoverlapping.templates) printf("!!!\n");
-			R2.nonoverlapping.chi2[j/SKIP]=chi2;
-			R2.nonoverlapping.p_value[j/SKIP]=p_value;
-#endif
-
+			if(NonOverlappingTemplateMatchings_v1 == NonOverlappingTemplateMatchings2) R1 = R_;
+			else R2 = R_;
 #ifdef FILE_OUTPUT
 			if ( isNegative(p_value) || isGreaterThanOne(p_value) )
 				fprintf(stats[TEST_NONPERIODIC], "\t\tWARNING:  P_VALUE IS OUT OF RANGE.\n");
-
-			fprintf(stats[TEST_NONPERIODIC], "%9.6f %f %s %3d\n", chi2, p_value, p_value < ALPHA ? "FAILURE" : "SUCCESS", j/SKIP);
 #endif
 
-#ifdef FILE_OUTPUT
+			fprintf(stats[TEST_NONPERIODIC], "%9.6f %f %s %3d\n", chi2, p_value, p_value < ALPHA ? "FAILURE" : "SUCCESS", j/SKIP);
 			fprintf(results[TEST_NONPERIODIC], "%f\n", p_value); fflush(results[TEST_NONPERIODIC]);
 #endif
 

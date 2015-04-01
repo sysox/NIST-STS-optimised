@@ -7,7 +7,7 @@
 /* New structures */
 unsigned char *array;
 #ifdef VERIFY_RESULTS
-struct results R1,R2;
+struct results R1,R2,R_;
 #endif
 
 /* original stuff */

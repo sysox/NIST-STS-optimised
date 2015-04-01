@@ -5,6 +5,7 @@
 #include "../include/externs.h"
 #include "../include/cephes.h"  
 #include "../include/tools.h" 
+#include "../include/stat_fncs.h"
 
 double psi2(int m, int n);
 
@@ -23,13 +24,15 @@ Serial(int m, int n)
 	p_value2 = cephes_igamc(pow(2, m-2)/2, del2/2.0);
 
 #ifdef VERIFY_RESULTS
-	R1.serial.psim0=psim0;
-	R1.serial.psim1=psim1;
-	R1.serial.psim2=psim2;
-	R1.serial.del1=del1;
-	R1.serial.del2=del2;
-	R1.serial.p_value1=p_value1;
-	R1.serial.p_value2=p_value2;
+	R_.serial.psim0=psim0;
+	R_.serial.psim1=psim1;
+	R_.serial.psim2=psim2;
+	R_.serial.del1=del1;
+	R_.serial.del2=del2;
+	R_.serial.p_value1=p_value1;
+	R_.serial.p_value2=p_value2;
+	if(Serial_v1 == Serial) R1 = R_;
+	else R2 = R_;
 #endif
 
 #ifdef FILE_OUTPUT
@@ -234,13 +237,15 @@ Serial2(int m, int n)
 	p_value2 = cephes_igamc(pow(2, m-2)/2, del2/2.0);
 	
 #ifdef VERIFY_RESULTS
-	R2.serial.psim0=psim0;
-	R2.serial.psim1=psim1;
-	R2.serial.psim2=psim2;
-	R2.serial.del1=del1;
-	R2.serial.del2=del2;
-	R2.serial.p_value1=p_value1;
-	R2.serial.p_value2=p_value2;
+	R_.serial.psim0=psim0;
+	R_.serial.psim1=psim1;
+	R_.serial.psim2=psim2;
+	R_.serial.del1=del1;
+	R_.serial.del2=del2;
+	R_.serial.p_value1=p_value1;
+	R_.serial.p_value2=p_value2;
+	if(Serial_v1 == Serial2) R1 = R_;
+	else R2 = R_;
 #endif
 
 #ifdef FILE_OUTPUT

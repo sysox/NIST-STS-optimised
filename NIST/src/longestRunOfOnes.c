@@ -6,6 +6,7 @@
 #include "../include/externs.h"
 #include "../include/cephes.h"  
 #include "../include/tools.h"
+#include "../include/stat_fncs.h"
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
                       L O N G E S T  R U N S  T E S T
@@ -92,11 +93,13 @@ LongestRunOfOnes(int n)
 	//for(i = 0; i < K; i++)
 	//	printf("%d ",nu[i]);
 #ifdef VERIFY_RESULTS
-	R1.longestrunofones.N=N;
-	R1.longestrunofones.M=M;
-	R1.longestrunofones.chi2=chi2;
-	for(i = 0; i < 7; i++) R1.longestrunofones.nu[i]=nu[i];
-	R1.longestrunofones.pval=pval;
+	R_.longestrunofones.N=N;
+	R_.longestrunofones.M=M;
+	R_.longestrunofones.chi2=chi2;
+	for(i = 0; i < 7; i++) R_.longestrunofones.nu[i]=nu[i];
+	R_.longestrunofones.pval=pval;
+	if(LongestRunOfOnes_v1 == LongestRunOfOnes) R1 = R_;
+	else R2 = R_;
 #endif
 
 #ifdef FILE_OUTPUT
@@ -295,11 +298,13 @@ LongestRunOfOnes2(int n)
 	//	printf("%d ",nu[i]);
 
 #ifdef VERIFY_RESULTS
-	R2.longestrunofones.N=N;
-	R2.longestrunofones.M=M;
-	R2.longestrunofones.chi2=chi2;
-	for(i = 0; i < 7; i++) R2.longestrunofones.nu[i]=nu[i];
-	R2.longestrunofones.pval=pval;
+	R_.longestrunofones.N=N;
+	R_.longestrunofones.M=M;
+	R_.longestrunofones.chi2=chi2;
+	for(i = 0; i < 7; i++) R_.longestrunofones.nu[i]=nu[i];
+	R_.longestrunofones.pval=pval;
+	if(LongestRunOfOnes_v1 == LongestRunOfOnes2) R1 = R_;
+	else R2 = R_;
 #endif
 
 #ifdef FILE_OUTPUT
@@ -450,64 +455,7 @@ LongestRunOfOnes3(int n)
 		}
 	}
 
-	/*
-	run = 0;
-	processed_bits = 0;
-	byte_size = M*N / 8;
-	mask = get_mask(LUT_Lrun_size);
-	block = 1;
-	Boffset = 0;
-	v_n_obs = 0;
 	
-	for (Boffset = 0; Boffset < byte_size; Boffset += LUT_Lrun_Bsize) {
-
-		tmp = get_block_fast(array, Boffset) & mask;
-		run += LUT_Lrun_start[tmp];
-
-		if (run > v_n_obs){
-			v_n_obs = run;
-		}
-		if (LUT_Lrun_max[tmp] > v_n_obs){
-			v_n_obs = LUT_Lrun_max[tmp];
-		}
-
-		if (tmp != mask) run = LUT_Lrun_end[tmp];
-		processed_bits += LUT_Lrun_size;
-
-		if (processed_bits == M*block){
-			if (v_n_obs < V[0])nu[0]++;
-			else if (v_n_obs > V[K])nu[K]++;
-			else nu[v_n_obs - V[0]]++;
-			block++;
-			v_n_obs = run = 0;
-		}
-	}
-
-
-	*/
-
-	/*
-	for ( i=0; i<N; i++ ) {
-	block = get_block_fast(array, offset >> 3) & mask;
-
-	v_n_obs = op.LUT_max_run[block];
-	run = op.LUT_end_run[block];
-
-	for(; offset + shift < i*M; offset += shift)
-	{
-	block = get_block_fast(array, offset >> 3) & mask;
-	run += op.LUT_start_run[get_block_fast(array, offset >> 3) & mask];
-
-	if ( run > v_n_obs ) v_n_obs = run;
-	if ( op.LUT_max_run[block] > v_n_obs ) v_n_obs = op.LUT_max_run[block];
-	if(block != mask) run = op.LUT_end_run[block];
-	}
-
-	if(v_n_obs < V[0])nu[0]++;
-	else if(v_n_obs > V[K])nu[K]++;
-	else nu[v_n_obs-V[0]]++;
-	}*/
-
 	chi2 = 0.0;
 	for (i = 0; i <= K; i++)
 		chi2 += ((nu[i] - N * pi[i]) * (nu[i] - N * pi[i])) / (N * pi[i]);
@@ -515,11 +463,13 @@ LongestRunOfOnes3(int n)
 	pval = cephes_igamc((double)(K / 2.0), chi2 / 2.0);
 
 #ifdef VERIFY_RESULTS
-	R2.longestrunofones.N = N;
-	R2.longestrunofones.M = M;
-	R2.longestrunofones.chi2 = chi2;
-	for (i = 0; i < 7; i++) R2.longestrunofones.nu[i] = nu[i];
-	R2.longestrunofones.pval = pval;
+	R_.longestrunofones.N=N;
+	R_.longestrunofones.M=M;
+	R_.longestrunofones.chi2=chi2;
+	for(i = 0; i < 7; i++) R_.longestrunofones.nu[i]=nu[i];
+	R_.longestrunofones.pval=pval;
+	if(LongestRunOfOnes_v1 == LongestRunOfOnes3) R1 = R_;
+	else R2 = R_;
 #endif
 
 #ifdef FILE_OUTPUT

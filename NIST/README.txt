@@ -10,48 +10,84 @@
 
 This is an alternative implementation of the NIST statistical randomness
 tests. The source codes include both the original and the new alternative
-implementation. Compile the source code the same way as you would the
-original code. The new binary supports a new optional command line argument
-which selects the code being executed: the original code or the new
-alternative code.
+improved variant/variants of tests. You can also compare performance of 
+both implementations and correctness of new implementation.
 
-Usage: assess <stream length> [-fast]
+Each test can be used in two versions v1, v2 (for instance Frequency_v1 
+and Frequency_v2),  where v1 (Frequency_v1) defines original implementation
+of the test and v2 (Frequency_v2) defines new implementation. Using main-speed.c 
+you can compare their speed. Using main-correctness.c you can check 
+(compare results) correctness of new version. 
+ 
+You can add new implementation of the arbitrary test as follows: 
+	1.Add the new function (Frequency_new(int n){...}) to file frequency.h.
+	2.Add its prototype (Frequency_new(int n);) to stat-fncs.h
+	3.Change #define Frequency_v2 Frequency3 
+				to #define Frequency_v2 Frequency_new
+ 
+*************************************************************************
+*                                                                       *
+*                           Randomness testing                          *
+*                                                                       *
+*************************************************************************
+
+1. Add files (without main.c, main-speed.c, main-correctness.c) from directories src and include to project.
+2. In config.h set the following:
+    //#define VERIFY_RESULTS 1
+    //#define SPEED 1
+     #define FILE_OUTPUT 1
+3. Add libfftw3-3.lib to project. 
+4. Copy libfftw3-3.dll to .exe .
+5. Usage: assess <stream length> [-fast]
    <stream length> is the length of the individual bit stream(s) to be processed
    -fast           use the faster alternative implementation of tests
 
+*************************************************************************
+*                                                                       *
+*                           Performance testing                         *
+*                                                                       *
+*************************************************************************
+0.Create empty project.
+1. Add files (without main.c, main-speed.c, main-correctness.c) from directories src and include to project.
+2. In config.h set the following:
+    //#define VERIFY_RESULTS 1
+    //#define SPEED 1
+     #define FILE_OUTPUT 1
+3. Add libfftw3-3.lib to project. 
+4. Copy libfftw3-3.dll to .exe .
+5. Add main-speed.c to project.
+6. Usage: main-speed.c scale repeat test_from test_to (for instance 0 10 1 2)
+	scale      - 0 (one fixed bit size = 20MB) or 1 (bitsizes are increases in steps)
+	repeat     - is number of times( 10) each test is executed (minimum time is taken as the result)
+	test_from test_to  - which tests are measured ( 1 - 2 = Freqency and BlockFrequency) 
+
+You can also compare speed of your implementation with some our implemenation.
+If you want to compare speed of our Frequency2 and your Frequency_your function
+it suffice to change defines to:
+    1. #define Frequency_v1 Frequency2
+	2. #define Frequency_v2 Frequency_your
 
 *************************************************************************
 *                                                                       *
-*                           Compilation                                 *
+*                           Correctness testing                         *
 *                                                                       *
 *************************************************************************
+0.Create empty project.
+1. Add files (without main.c, main-speed.c, main-correctness.c) from directories src and include to project.
+2. In config.h set the following:
+    #define VERIFY_RESULTS 1
+    //#define SPEED 1
+    //#define FILE_OUTPUT 1
+3. Add libfftw3-3.lib to project. 
+4. Copy libfftw3-3.dll to .exe .
+5. Add main-correctness.c to project.
+6. Usage: main-speed.c scale repeat test_from test_to (for instance 0 10 1 2)
+	scale      - 0 (one fixed bit size = 20MB) or 1 (bitsizes are increases in steps)
+	repeat     - is number of times(10) each test is executed (minimum time is taken as the result)
+	test_from test_to  - which tests are measured ( 1 - 2 = Frequency and BlockFrequency) 
 
-The source code can be compiled in one of the three modes. The modes can
-be selected in config.h Uncoment exactlty one of the following lines:
 
-//#define VERIFY_RESULTS 1
-//#define SPEED 1
-//#define FILE_OUTPUT 1
 
-Uncommenting the definition of FILE_OUTPUT produces a binary with the
-standard functionality. This is what you typically want and this is the
-default. The usage of the binary is described in the previous section.
-
-Uncommenting the definition of VERIFY_RESULTS produces a binary that
-runs a series of tests which compare the results of the original code
-with the results of the new code. The one and only coomand line 
-parameter of resulting program is the number of the randomness test
-(1-15). Bitsizes and secondary parameters can be modified in the source
-code (search for funtion test() in main.c).
-
-Uncommenting the definition of SPEED produces a binary that runs a series
-of speed measurements. The commmand line arguments are as follows:
-./a.out scale repeat test_from test_to
-where scale is 0 (bitsizes are increades in steps) or 1 (one fixed bit size),
-repeat is number of times each test is executed (minimum time is taken as the
-result), test_from and test_to affect which randomness tests are executed
-(1 to 15). Other parameters can be modified in the source code (search for
-funtion speed in main.c).
 
 *************************************************************************
 *                                                                       *
@@ -67,3 +103,5 @@ parts of the source code. For the rank test search for function YYY()
 in rank.c. For the Overlapping Template Matching test search for
 the funtion OverlappingTemplateMatchings2() in 
 overlappingTemplateMatchings.c
+
+ 

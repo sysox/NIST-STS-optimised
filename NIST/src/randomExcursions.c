@@ -5,6 +5,7 @@
 #include "../include/externs.h"
 #include "../include/cephes.h"  
 #include "../include/tools.h" 
+#include "../include/stat_fncs.h"
 
 #define MAXCYCLES 1000
 
@@ -30,7 +31,7 @@ RandomExcursions(int n)
 	//int maxcyc;
 	
 #ifdef VERIFY_RESULTS
-	R1.random_excursion.valid=0;
+	R_.random_excursion.valid=0;
 #endif
 	//maxcyc=MAX(MAXCYCLES, n/100);
 
@@ -156,11 +157,13 @@ RandomExcursions(int n)
 			fprintf(results[TEST_RND_EXCURSION], "%f\n", p_value); fflush(results[TEST_RND_EXCURSION]);
 #endif
 #ifdef VERIFY_RESULTS
-			R1.random_excursion.valid=1;
-			R1.random_excursion.J[i]=J;
-			R1.random_excursion.x[i]=x;
-			R1.random_excursion.p_value[i]=p_value;
-			R1.random_excursion.sum[i]=sum;
+			R_.random_excursion.valid=1;
+			R_.random_excursion.J[i]=J;
+			R_.random_excursion.x[i]=x;
+			R_.random_excursion.p_value[i]=p_value;
+			R_.random_excursion.sum[i]=sum;
+			if(RandomExcursions_v1 == RandomExcursions) R1 = R_;
+			else R2 = R_;			
 #endif
 		}
 		}
@@ -225,7 +228,7 @@ RandomExcursions2(int n)
 	//int byte_sum[256] = {-8,-6,-6,-4,-6,-4,-4,-2,-6,-4,-4,-2,-4,-2,-2,0,-6,-4,-4,-2,-4,-2,-2,0,-4,-2,-2,0,-2,0,0,2,-6,-4,-4,-2,-4,-2,-2,0,-4,-2,-2,0,-2,0,0,2,-4,-2,-2,0,-2,0,0,2,-2,0,0,2,0,2,2,4,-6,-4,-4,-2,-4,-2,-2,0,-4,-2,-2,0,-2,0,0,2,-4,-2,-2,0,-2,0,0,2,-2,0,0,2,0,2,2,4,-4,-2,-2,0,-2,0,0,2,-2,0,0,2,0,2,2,4,-2,0,0,2,0,2,2,4,0,2,2,4,2,4,4,6,-6,-4,-4,-2,-4,-2,-2,0,-4,-2,-2,0,-2,0,0,2,-4,-2,-2,0,-2,0,0,2,-2,0,0,2,0,2,2,4,-4,-2,-2,0,-2,0,0,2,-2,0,0,2,0,2,2,4,-2,0,0,2,0,2,2,4,0,2,2,4,2,4,4,6,-4,-2,-2,0,-2,0,0,2,-2,0,0,2,0,2,2,4,-2,0,0,2,0,2,2,4,0,2,2,4,2,4,4,6,-2,0,0,2,0,2,2,4,0,2,2,4,2,4,4,6,0,2,2,4,2,4,4,6,2,4,4,6,4,6,6,8};
 
 #ifdef VERIFY_RESULTS
-	R2.random_excursion.valid=0;
+	R_.random_excursion.valid=0;
 #endif
 
 
@@ -342,11 +345,13 @@ RandomExcursions2(int n)
 #endif
 
 #ifdef VERIFY_RESULTS
-				R2.random_excursion.valid=1;
-				R2.random_excursion.J[i]=J;
-				R2.random_excursion.x[i]=x;
-				R2.random_excursion.p_value[i]=p_value;
-				R2.random_excursion.sum[i]=sum;
+			R_.random_excursion.valid=1;
+			R_.random_excursion.J[i]=J;
+			R_.random_excursion.x[i]=x;
+			R_.random_excursion.p_value[i]=p_value;
+			R_.random_excursion.sum[i]=sum;
+			if(RandomExcursions_v1 == RandomExcursions2) R1 = R_;
+			else R2 = R_;			
 #endif
 			}
 		}

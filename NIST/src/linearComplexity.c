@@ -6,6 +6,7 @@
 #include "../include/cephes.h"  
 #include "../include/BM.h"
 #include "../include/BMA.h"
+#include "../include/stat_fncs.h"
 
 //100MB - M=1000 927sec
 //		  M=5000 4500sec
@@ -129,15 +130,17 @@ LinearComplexity(int M, int n)
 		chi2 += pow(nu[i]-N*pi[i], 2) / (N*pi[i]);
 		//printf("%d ",nu[i]);
 #ifdef VERIFY_RESULTS
-		R1.linear_complexity.nu[i]=nu[i];
+		R_.linear_complexity.nu[i]=nu[i];
 #endif
 	}
 
 	p_value = cephes_igamc(K/2.0, chi2/2.0);
 
 #ifdef VERIFY_RESULTS
-	R1.linear_complexity.chi2=chi2;
-	R1.linear_complexity.p_value=p_value;
+	R_.linear_complexity.chi2=chi2;
+	R_.linear_complexity.p_value=p_value;
+	if(LinearComplexity_v1 == LinearComplexity) R1 = R_;
+	else R2 = R_;
 #endif
 
 #ifdef FILE_OUTPUT
@@ -284,14 +287,16 @@ LinearComplexity2(int M, int n)
 		chi2 += pow(nu[i]-N*pi[i], 2) / (N*pi[i]);
 		//printf("%d ",nu[i]);
 #ifdef VERIFY_RESULTS
-		R2.linear_complexity.nu[i]=nu[i];
+		R_.linear_complexity.nu[i]=nu[i];
 #endif
 	}
 	
 	p_value = cephes_igamc(K/2.0, chi2/2.0);
 #ifdef VERIFY_RESULTS
-	R2.linear_complexity.chi2=chi2;
-	R2.linear_complexity.p_value=p_value;
+	R_.linear_complexity.chi2=chi2;
+	R_.linear_complexity.p_value=p_value;
+	if(LinearComplexity_v1 == LinearComplexity2) R1 = R_;
+	else R2 = R_;
 #endif
 
 #ifdef FILE_OUTPUT
@@ -391,14 +396,16 @@ LinearComplexity3(int M, int n)
 		chi2 += pow(nu[i] - N*pi[i], 2) / (N*pi[i]);
 		//printf("%d ",nu[i]);
 #ifdef VERIFY_RESULTS
-		R2.linear_complexity.nu[i] = nu[i];
+		R_.linear_complexity.nu[i] = nu[i];
 #endif
 	}
 
 	p_value = cephes_igamc(K / 2.0, chi2 / 2.0);
 #ifdef VERIFY_RESULTS
-	R2.linear_complexity.chi2 = chi2;
-	R2.linear_complexity.p_value = p_value;
+	R_.linear_complexity.chi2=chi2;
+	R_.linear_complexity.p_value=p_value;
+	if(LinearComplexity_v1 == LinearComplexity3) R1 = R_;
+	else R2 = R_;
 #endif
 
 #ifdef FILE_OUTPUT

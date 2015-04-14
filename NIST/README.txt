@@ -30,24 +30,27 @@ You can add new implementation of the arbitrary test as follows:
 *                           Randomness testing                          *
 *                                                                       *
 *************************************************************************
-
+0.Create empty in Microsoft Visual Studio.
 1. Add files (without main.c, main-speed.c, main-correctness.c) from directories src and include to project.
 2. In config.h set the following:
     //#define VERIFY_RESULTS 1
     //#define SPEED 1
      #define FILE_OUTPUT 1
 3. Add libfftw3-3.lib to project. 
-4. Copy libfftw3-3.dll to .exe .
-5. Usage: assess <stream length> [-fast]
+4. Copy libfftw3-3.dll to .exe.
+5. Copy  directory "experiments" into project(place it to .sln file).
+6. Usage: assess <stream length> [-fast] 
    <stream length> is the length of the individual bit stream(s) to be processed
    -fast           use the faster alternative implementation of tests
+   (set Command arguments: 10000 -fast if you want to test 10 000 bits with 
+and faster version of NIST tests)
 
 *************************************************************************
 *                                                                       *
 *                           Performance testing                         *
 *                                                                       *
 *************************************************************************
-0.Create empty project.
+0.Create empty in Microsoft Visual Studio.
 1. Add files (without main.c, main-speed.c, main-correctness.c) from directories src and include to project.
 2. In config.h set the following:
     //#define VERIFY_RESULTS 1
@@ -72,7 +75,7 @@ it suffice to change defines to:
 *                           Correctness testing                         *
 *                                                                       *
 *************************************************************************
-0.Create empty project.
+0.Create empty in Microsoft Visual Studio.
 1. Add files (without main.c, main-speed.c, main-correctness.c) from directories src and include to project.
 2. In config.h set the following:
     #define VERIFY_RESULTS 1

@@ -11,6 +11,7 @@
 #include "../include/tools.h"
 #include "../include/stat_fncs.h"
 
+
 #ifdef _WIN32
 #define M_LOG2E 1.44269504088896340736 //log2(e)
 long double log2(const long double x){
@@ -32,6 +33,7 @@ void timings(){
 	if(start != 0)fprintf(times,"time %lf \n ",1.0*(end - start)/CLOCKS_PER_SEC);
 	printf("time %lf \n",1.0*(end - start)/CLOCKS_PER_SEC);
 	start = end;
+	
 }
 unsigned char* load_array(FILE* f,int bit_size){
 	unsigned char *array;
@@ -211,10 +213,10 @@ void speed(int scale,int repeat, int test_from, int test_to)
 	else
 	{
 		from=1024*1024*8*20;
-		to=1024*1024*8*20;
+		to=1024*1024*8*20; 
 	}
 
-	for(n=from;n<=to;n=(scale)?n*10+rand()%8:n+1)
+	for(n=from;n<=to;n=(scale)?n*2+rand()%8:n+1) //return *2 -> *10
 	{
         for(t=test_from;t<=test_to;t++)
 		{
@@ -262,7 +264,7 @@ void speed(int scale,int repeat, int test_from, int test_to)
 				case 25: if (log2(n) >= 24) Serial_v1(24, n); param = 24;  break;
 				case 26: if (log2(n) >= 5) Serial_v1(5, n); param = 5;  break;
 				case 27: LinearComplexity_v1(500, n); param = 500;   break;
-				case 28: LinearComplexity_v1(1000, n); param = 1000;   break;
+				//case 28: LinearComplexity_v1(1000, n); param = 1000;   break; TODO uncomment
 				case 29: BlockFrequency_v1(128, n); param = 128; break;
 				case 30: NonOverlappingTemplateMatchings_v1(21, n); param = 21; break;
 				case 31: OverlappingTemplateMatchings_v1(24, n); param = 24;  break;
@@ -311,7 +313,9 @@ void speed(int scale,int repeat, int test_from, int test_to)
 				case 25: if (log2(n) >= 24) Serial_v2(24, n); break;
 				case 26: if (log2(n) >= 5) Serial_v2(5, n); break;
 				case 27: LinearComplexity_v2(500, n); break;
-				case 28: LinearComplexity_v2(1000, n); break;
+
+				case 28: LinearComplexity_v2(n, n); break; //TODO comment
+				//case 28: LinearComplexity_v2(1000, n); break; TODO uncomment
 				case 29: BlockFrequency_v2(128, n); break;
 				case 30: NonOverlappingTemplateMatchings_v2(21, n); break;
 				case 31: OverlappingTemplateMatchings_v2(24, n); break;
@@ -383,7 +387,7 @@ void speed(int scale,int repeat, int test_from, int test_to)
 #ifdef SPEED
 int main(int argc, char **argv)
 {
-	
+
 	int scale,repeat, test_from, test_to;
 
 	if(argc>=2)

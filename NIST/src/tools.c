@@ -32,7 +32,7 @@ THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <stdio.h>
 #include "../include/tools.h"
-
+#include "../include/externs.h"
 
 void bits(unsigned char*array, int byte_size)
 {
@@ -118,3 +118,152 @@ unsigned int get_2bytes(unsigned char* array, int byte_offset)
 unsigned int get_mask(int size){
 	return (1 << size) - 1;
 }
+
+
+
+unsigned int popCountLUT16_64(unsigned __int64* addr, unsigned __int64* endAddr)
+{
+	unsigned int NumberOne1 = 0;
+	unsigned __int64 val1;
+
+	for (; addr<endAddr;)
+	{
+		val1 = *addr;
+		addr++;
+		NumberOne1 += LUT_HW_16[val1 >> 48] + LUT_HW_16[(val1 >> 32) & 0xFFFF] + LUT_HW_16[(val1 >> 16) & 0xFFFF] + LUT_HW_16[val1 & 0xFFFF];
+	}
+	return NumberOne1;
+}
+
+unsigned int popCountLUT16_32(unsigned __int32* addr, unsigned __int32* endAddr)
+{
+	unsigned int NumberOne1 = 0;
+	unsigned __int32 val1;
+
+	for (; addr<endAddr;)
+	{
+		val1 = *addr;
+		addr++;
+		NumberOne1 += LUT_HW_16[val1 >> 16] + LUT_HW_16[val1 & 0xFFFF];
+	}
+	return NumberOne1;
+}
+
+//BITHACKS
+int bitcount(unsigned int n) {
+	/* works for 32-bit numbers only    */
+	/* fix last line for 64-bit numbers */
+
+	register unsigned int tmp;
+
+	tmp = n - ((n >> 1) & 033333333333)
+		- ((n >> 2) & 011111111111);
+	return ((tmp + (tmp >> 3)) & 030707070707) % 63;
+}
+
+unsigned int popCountBITHACK_32(unsigned __int32* addr, unsigned __int32* endAddr){
+	unsigned int NumberOne1 = 0;
+	unsigned __int32 val1;
+
+	for (; addr<endAddr; addr++)
+	{
+		NumberOne1 += bitcount(*addr);
+	}
+	return NumberOne1;
+}
+
+unsigned int runsLUT16_32(unsigned __int32* addr, unsigned __int32* endAddr)
+{
+	unsigned int NumberOne1 = 0;
+	unsigned int val1, val2;
+
+	for (; addr<endAddr;)
+	{
+		val1 = *addr;
+		addr++;
+
+		val2 = val1 ^ ((val1 >> 1)) ^ (*addr & 1)*(1 << 31);
+
+		NumberOne1 += LUT_HW_16[val2 >> 16] + LUT_HW_16[val2 & 0xFFFF];
+	}
+	return NumberOne1;
+}
+
+
+
+
+void Histogram(int bitstart, int* P, int m, int bitend){
+	int help, mask, i, k;
+	unsigned char* pbyte;
+
+	mask = (1 << m) - 1;
+
+	i = bitstart;
+	while (i % 8 != 0 && i <  bitend - m + 1){
+		help = get_nth_block4(array, i);
+		++P[help & mask];
+		i++;
+	}
+
+	pbyte = array + i/8;
+	help = get_nth_block4(array, i);
+
+	for (; i < bitend - m + 1 - 8; i += 8) {
+		++P[help & mask]; help >>= 1;
+		++P[help & mask]; help >>= 1;
+		++P[help & mask]; help >>= 1;
+		++P[help & mask]; help >>= 1;
+		++P[help & mask]; help >>= 1;
+		++P[help & mask]; help >>= 1;
+		++P[help & mask]; help >>= 1;
+
+		++P[help & mask];
+		help = *(unsigned int*)(++pbyte);
+	}
+
+	for (; i < bitend - m + 1; i++) {
+		help = get_nth_block4(array, i);
+		++P[help & mask];
+	}
+}
+
+
+void LSHIFT32(int *a, int shift, int Tsize)
+{
+	int i;
+	int com = sizeof(int)* 8 - shift;
+
+	for (i = 0; i < Tsize; i++)
+	{
+		a[i] = (a[i] >> shift) ^ (a[i + 1] << com);
+	}
+}
+
+void LSHIFT32_p(int* a, int shift, int Tsize)
+{
+	unsigned int* p[4];
+	int i;
+	p[0] = ((unsigned char*)a + 0);
+	p[1] = ((unsigned char*)a + 1);
+	p[2] = ((unsigned char*)a + 2);
+	p[3] = ((unsigned char*)a + 3);
+
+	for (i = 0; i < Tsize; i++)
+	{
+
+	}
+}
+
+void LSHIFT64(__int64 *a, int shift, int Tsize)
+{
+	int i;
+	int com = sizeof(__int64)* 8 - shift;
+
+	for (i = 0; i < Tsize; i++)
+	{
+
+		a[i] = (a[i] >> shift) ^ (a[i + 1] << com);
+	}
+}
+
+

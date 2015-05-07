@@ -821,7 +821,7 @@ void test(int testcase,int smallnumbers)
 				}
 			}
 
-			/*if(testcase == TEST_FFT)
+			if(testcase == TEST_FFT)
 			{
 				DiscreteFourierTransform_v1(i); DiscreteFourierTransform_v2(i);
 				r=compare_results(TEST_FFT);
@@ -960,7 +960,7 @@ void test(int testcase,int smallnumbers)
 					}
 				}
 			}
-			*/
+			
 			free(epsilon); free(array);
 		}
 	}

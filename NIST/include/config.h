@@ -8,8 +8,8 @@ extern "C" {
 
 // New defines
 //#define VERIFY_RESULTS 1
-#define SPEED 1
-//#define FILE_OUTPUT 1
+//#define SPEED 1
+#define FILE_OUTPUT 1
 //#undef FILE_OUTPUT
 
 // Original stuff

@@ -51,7 +51,7 @@ Runs(int n)
 	
 		erfc_arg = fabs(V - 2.0 * n * pi * (1-pi)) / (2.0 * pi * (1-pi) * sqrt(2*n));
 		p_value = erfc(erfc_arg);
-		
+
 #ifdef VERIFY_RESULTS
 		R_.runs.p_value=p_value;
 		R_.runs.pi=pi;
@@ -348,5 +348,130 @@ Runs3(int n)
 #endif
 
 	//printf("R_: %d %lf \n",S,(double)V);
+
+}
+
+
+
+void
+Runs4(int n)
+{
+	int		S, k, i, j, diff;
+	double	pi, erfc_arg, p_value;
+	double V;
+
+	unsigned int NumberOfRuns = 0;
+
+	S = 0;
+	
+	int LUT_HW_size = 16;
+	unsigned char *LUT_HW = LUT_HW_16;
+
+
+	const int Tsize = 64;
+	unsigned __int64* pblock;
+	unsigned __int64 help, val1 , val2;
+	const unsigned int mask = (1 << LUT_HW_size) - 1;
+
+
+
+
+	S = 0;
+
+	pblock = (unsigned __int64*)array;
+	help = *pblock;
+	
+	for (i = 0; i < n + 1 - Tsize; i += Tsize) {
+		for (j = 0; j < Tsize / LUT_HW_size; j++){
+			S += LUT_HW[help & mask];
+			help >>= LUT_HW_size;
+		}
+		help = *(++pblock);
+	}
+
+	for (; i < n; i++) {
+		help = get_nth_block4(array, i);
+		S += help & 1;
+	}
+
+	pi = (double)S / (double)n;
+
+	if (fabs(pi - 0.5) > (2.0 / sqrt(n))) {
+#ifdef FILE_OUTPUT
+		fprintf(stats[TEST_RUNS], "\t\t\t\tRUNS TEST\n");
+		fprintf(stats[TEST_RUNS], "\t\t------------------------------------------\n");
+		fprintf(stats[TEST_RUNS], "\t\tPI ESTIMATOR CRITERIA NOT MET! PI = %f\n", pi);
+#endif
+		p_value = 0.0;
+
+#ifdef VERIFY_RESULTS
+		R_.runs.p_value = p_value;
+		R_.runs.pi = pi;
+		R_.runs.V = 0.0;
+		R_.runs.erfc_arg = 0.0;
+#endif
+
+
+	}
+	else {
+
+		V = 1;
+		pblock = array;
+		
+		for (i = 0; i < n - Tsize - 1; i += Tsize)
+		{
+			help = *pblock;
+			++pblock;
+
+			help = help ^ (help >> 1) ^ (*pblock << (Tsize - 1));
+
+			V += LUT_HW_16[help & 0xFFFF]; help >>= LUT_HW_size;
+			V += LUT_HW_16[help & 0xFFFF]; help >>= LUT_HW_size;
+			V += LUT_HW_16[help & 0xFFFF]; help >>= LUT_HW_size;
+			V += LUT_HW_16[help & 0xFFFF]; 	
+		}
+
+		for (; i + 1 < n; i++)
+		{
+			if ((get_nth_block_effect(array, i ) & 1) != (get_nth_block_effect(array, i + 1) & 1))
+				V++;
+		}
+
+		erfc_arg = fabs((double)V - 2.0 * n * pi * (1 - pi)) / (2.0 * pi * (1 - pi) * sqrt(2 * n));
+		p_value = erfc(erfc_arg);
+		//printf("Pval: %lf sum %lf", p_value, V);
+
+#ifdef VERIFY_RESULTS
+		R_.runs.p_value = p_value;
+		R_.runs.pi = pi;
+		R_.runs.V = V;
+		R_.runs.erfc_arg = erfc_arg;
+		if (Runs_v1 == Runs4) R1 = R_;
+		else R2 = R_;
+#endif
+
+#ifdef FILE_OUTPUT
+		fprintf(stats[TEST_RUNS], "\t\t\t\tRUNS TEST\n");
+		fprintf(stats[TEST_RUNS], "\t\t------------------------------------------\n");
+		fprintf(stats[TEST_RUNS], "\t\tCOMPUTATIONAL INFORMATION:\n");
+		fprintf(stats[TEST_RUNS], "\t\t------------------------------------------\n");
+		fprintf(stats[TEST_RUNS], "\t\t(a) Pi                        = %f\n", pi);
+		fprintf(stats[TEST_RUNS], "\t\t(b) V_n_obs (Total # of runs) = %d\n", (int)V);
+		fprintf(stats[TEST_RUNS], "\t\t(c) V_n_obs - 2 n pi (1-pi)\n");
+		fprintf(stats[TEST_RUNS], "\t\t    -----------------------   = %f\n", erfc_arg);
+		fprintf(stats[TEST_RUNS], "\t\t      2 sqrt(2n) pi (1-pi)\n");
+		fprintf(stats[TEST_RUNS], "\t\t------------------------------------------\n");
+		if (isNegative(p_value) || isGreaterThanOne(p_value))
+			fprintf(stats[TEST_RUNS], "WARNING:  P_VALUE IS OUT OF RANGE.\n");
+
+		fprintf(stats[TEST_RUNS], "%s\t\tp_value = %f\n\n", p_value < ALPHA ? "FAILURE" : "SUCCESS", p_value); fflush(stats[TEST_RUNS]);
+#endif
+	}
+
+#ifdef FILE_OUTPUT
+	fprintf(results[TEST_RUNS], "%f\n", p_value); fflush(results[TEST_RUNS]);
+#endif
+
+	//printf("R2: %d %lf \n",S,(double)V);
 
 }

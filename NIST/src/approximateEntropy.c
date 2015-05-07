@@ -290,3 +290,124 @@ ApproximateEntropy2(int m, int n)
 #endif
 	free(P);
 }
+
+void
+ApproximateEntropy4(int m, int n)
+{
+	int				i, k, len, cc = 0;
+	double			sum, numOfBlocks, ApEn[2], apen, chi_squared, p_value;
+	unsigned int	*P, mask, help;
+
+#ifdef FILE_OUTPUT
+	fprintf(stats[TEST_APEN], "\t\t\tAPPROXIMATE ENTROPY TEST\n");
+	fprintf(stats[TEST_APEN], "\t\t--------------------------------------------\n");
+	fprintf(stats[TEST_APEN], "\t\tCOMPUTATIONAL INFORMATION:\n");
+	fprintf(stats[TEST_APEN], "\t\t--------------------------------------------\n");
+	fprintf(stats[TEST_APEN], "\t\t(a) m (block length)    = %d\n", m);
+#endif
+
+
+	numOfBlocks = n;
+	m++;
+	mask = (1 << m) - 1;
+
+	len = (1 << m);
+
+#ifdef VERIFY_RESULTS
+	R_.approximate_entropy.P = malloc(sizeof(unsigned int)*len * 2);
+	if (R_.approximate_entropy.P == NULL) { printf("Approximate entropy test: Cannot allocate memory.\n"); return; }
+#endif
+
+	if ((P = (unsigned int*)calloc(len, sizeof(unsigned int))) == NULL) {
+#ifdef FILE_OUTPUT
+		fprintf(stats[TEST_APEN], "ApEn:  Insufficient memory available.\n");
+#endif
+		return;
+	}
+	for (i = 0; i < len; i++)
+		P[i] = 0;
+	Histogram(0, P, m, n);
+	
+	for (i = 1; i<m; i++) {
+		k = get_nth_block4(array, n - m + i)&(mask >> i);
+		//printf("%d ",k);
+		k ^= (((unsigned int*)array)[0] << (m - i));
+		//printf("%d ",k);
+		k &= mask;
+		//printf("%d ",k);
+		P[k]++;
+	}
+
+	//DISPLAY FREQUENCY
+	sum = 0.0;
+	for (i = 0; i < len / 2; i++) {
+		help = P[Mirrored_int(i, m - 1)] + P[Mirrored_int(i, m - 1) + len / 2];
+		if (help > 0)
+			sum += help*log(help / numOfBlocks);
+#ifdef VERIFY_RESULTS
+		R_.approximate_entropy.P[cc++] = help;
+#endif
+		//printf("%i ",help);	
+	}
+
+
+	sum /= numOfBlocks;
+	ApEn[0] = sum;
+
+	sum = 0.0;
+	for (i = 0; i < len; i++) {
+		if (P[i] > 0)
+			sum += P[i] * log(P[i] / numOfBlocks);
+		//printf("[%d: %d] ",i,P[Mirrored_int(i,m)]);	
+#ifdef VERIFY_RESULTS
+		R_.approximate_entropy.P[cc++] = P[Mirrored_int(i, m)];
+#endif
+	}
+#ifdef VERIFY_RESULTS
+	R_.approximate_entropy.pp = cc;
+#endif
+
+	sum /= numOfBlocks;
+	ApEn[1] = sum;
+
+
+
+	//printf("\n");
+	//printf("SUM: %lf \n\n",sum);
+
+	//printf("%lf %lf",ApEn[0],ApEn[1]);
+	apen = ApEn[0] - ApEn[1];
+	chi_squared = 2.0*n*(log(2) - apen);
+	p_value = cephes_igamc(pow(2, m - 2), chi_squared / 2.0);
+
+#ifdef VERIFY_RESULTS
+	R_.approximate_entropy.p_value = p_value;
+	R_.approximate_entropy.chi_squared = chi_squared;
+	R_.approximate_entropy.ApEn[0] = ApEn[0];
+	R_.approximate_entropy.ApEn[1] = ApEn[1];
+	if (ApproximateEntropy_v1 == ApproximateEntropy4) R1 = R_;
+	else R2 = R_;
+#endif
+
+	//printf("P-value %lf \n",p_value);
+#ifdef FILE_OUTPUT
+	fprintf(stats[TEST_APEN], "\t\t(b) n (sequence length) = %d\n", n);
+	fprintf(stats[TEST_APEN], "\t\t(c) Chi^2               = %f\n", chi_squared);
+	fprintf(stats[TEST_APEN], "\t\t(d) Phi(m)	       = %f\n", ApEn[0]);
+	fprintf(stats[TEST_APEN], "\t\t(e) Phi(m+1)	       = %f\n", ApEn[1]);
+	fprintf(stats[TEST_APEN], "\t\t(f) ApEn                = %f\n", apen);
+	fprintf(stats[TEST_APEN], "\t\t(g) Log(2)              = %f\n", log(2.0));
+	fprintf(stats[TEST_APEN], "\t\t--------------------------------------------\n");
+
+	if (m > (int)(log(n) / log(2) - 5)) {
+		fprintf(stats[TEST_APEN], "\t\tNote: The blockSize = %d exceeds recommended value of %d\n", m,
+			MAX(1, (int)(log(n) / log(2) - 5)));
+		fprintf(stats[TEST_APEN], "\t\tResults are inaccurate!\n");
+		fprintf(stats[TEST_APEN], "\t\t--------------------------------------------\n");
+	}
+
+	fprintf(stats[TEST_APEN], "%s\t\tp_value = %f\n\n", p_value < ALPHA ? "FAILURE" : "SUCCESS", p_value); fflush(stats[TEST_APEN]);
+	fprintf(results[TEST_APEN], "%f\n", p_value); fflush(results[TEST_APEN]);
+#endif
+	free(P);
+}

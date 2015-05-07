@@ -23,8 +23,7 @@ Frequency(int n)
 	s_obs = fabs(sum)/sqrt(n);
 	f = s_obs/sqrt2;
 	p_value = erfc(f);
-	//printf("Pval: %lf\n",p_value);
-	//printf("%lf ",sum);
+	//printf("Pval: %lf sum %lf \n", p_value, sum);
 #ifdef VERIFY_RESULTS
 	R_.frequency.sum=sum;
 	R_.frequency.sum_n=sum/n;
@@ -116,7 +115,7 @@ Frequency2(int n)
 	//printf("%lf ",(double)sum);
 #ifdef VERIFY_RESULTS
 	R_.frequency.sum=sum;
-	R_.frequency.sum_n=sum/n;
+	R_.frequency.sum_n = sum / n;
 	R_.frequency.p_value=p_value;
 	if(Frequency_v1 == Frequency2) R1 = R_;
 	else R2 = R_;
@@ -145,7 +144,7 @@ Frequency3(int n)
 
 	int LUT_HW_size = 16;
 	int LUT_HW_Bsize = 2;
-	signed char *LUT_HW = LUT_HW_16;
+	unsigned char *LUT_HW = LUT_HW_16;
 
 	if(0)
 	{
@@ -198,3 +197,128 @@ Frequency3(int n)
 	fprintf(results[TEST_FREQUENCY], "%f\n", p_value); fflush(results[TEST_FREQUENCY]);
 #endif
 }
+
+
+//Alin Suciu suggestions
+void
+Frequency4(int n)
+{
+	int int_sum, i, j;
+	double	f, s_obs, p_value, sum, sqrt2 = 1.41421356237309504880;
+	
+	int LUT_HW_size = 16;
+	unsigned char *LUT_HW = LUT_HW_16;
+	
+	
+	const int Tsize = 64;
+	unsigned __int64* pblock;
+	unsigned __int64 help;
+	const unsigned int mask = (1 << LUT_HW_size) - 1;
+	
+
+	
+	
+	sum = 0.0;
+	int_sum = 0;
+
+	pblock = (unsigned __int64*)array;
+	help = *pblock;
+	i = 0;
+	for ( ; i < n + 1 - Tsize; i += Tsize) {
+		for (j = 0; j < Tsize / LUT_HW_size; j++){
+			int_sum += LUT_HW[help & mask];
+			help >>= LUT_HW_size;
+		}
+		help = *(++pblock);
+	}
+
+	for (; i < n; i++) {
+		help = get_nth_block4(array, i);
+		int_sum += help & 1;
+	}
+
+	sum = int_sum - (n - int_sum);
+	s_obs = fabs(sum) / sqrt(n);
+	f = s_obs / sqrt2;
+	p_value = erfc(f);
+
+	//printf("Pval: %lf sum %lf\n", p_value, sum);
+
+#ifdef VERIFY_RESULTS
+	R_.frequency.sum = sum;
+	R_.frequency.sum_n = sum / n;
+	R_.frequency.p_value = p_value;
+	if (Frequency_v1 == Frequency4) R1 = R_;
+	else R2 = R_;
+#endif
+}
+
+/*
+void
+Frequency5(int n)
+{
+	int int_sum, mask,i;
+	double	f, s_obs, p_value, sum, sqrt2 = 1.41421356237309504880;
+	unsigned char *p_tmp, *p_end;
+
+	int LUT_HW_size = 64;
+
+	sum = 0.0;
+	int_sum = 0;
+
+
+	p_end = array + (n - (n % LUT_HW_size)) / 8;
+	int_sum += popCountLUT16_32((unsigned __int32*)array, (unsigned __int32*)p_end);
+
+	
+	if (n % LUT_HW_size){
+		for (i = 0; i < n % LUT_HW_size; i++)
+			int_sum += get_nth_block4(p_end, i) & 1;
+	}
+	
+
+	sum = int_sum - (n - int_sum);
+	s_obs = fabs(sum) / sqrt(n);
+	f = s_obs / sqrt2;
+	p_value = erfc(f);
+
+	//printf("Pval: %lf sum %lf", p_value, sum);
+
+
+}
+
+void
+Frequency6(int n)
+{
+	int int_sum, mask, i;
+	double	f, s_obs, p_value, sum, sqrt2 = 1.41421356237309504880;
+	unsigned char *p_tmp, *p_end;
+
+	int LUT_HW_size = 64;
+	int LUT_HW_Bsize = 8;
+
+
+	sum = 0.0;
+	int_sum = 0;
+
+	p_end = array + (n - (n % LUT_HW_size)) / 8;
+	int_sum += popCountBITHACK_32((unsigned __int64*)array, (unsigned __int64*)p_end);
+
+
+	if (n % LUT_HW_size){
+		for (i = 0; i < n % LUT_HW_size; i++)
+			int_sum += get_nth_block4(p_end, i) & 1;
+	}
+
+	sum = int_sum - (n - int_sum);
+	s_obs = fabs(sum) / sqrt(n);
+	f = s_obs / sqrt2;
+	p_value = erfc(f);
+
+	//printf("Pval: %lf sum %lf", p_value, sum);
+
+
+}
+
+*/
+

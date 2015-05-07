@@ -42,3 +42,24 @@ int Mirrored_int(unsigned int val, int m);
 unsigned int get_block_fast(unsigned char* array, int offset);
 unsigned int get_2bytes(unsigned char* array, int byte_offset);
 unsigned int get_mask(int size);
+
+
+// Allin ideas
+unsigned int popCountLUT16_64(unsigned __int64* addr, unsigned __int64* endAddr);
+unsigned int popCountLUT16_32(unsigned __int32* addr, unsigned __int32* endAddr);
+
+
+
+//BITHACKS
+int bitcount(unsigned int n);
+
+unsigned int popCountBITHACK_32(unsigned __int32* addr, unsigned __int32* endAddr);
+unsigned int runsLUT16_32(unsigned __int32* addr, unsigned __int32* endAddr);
+
+
+//for whole array
+void Histogram(int bitstart, int* P, int m, int bits_covered);
+
+void LSHIFT32(int *a, int shift, int Tsize);
+void LSHIFT32_p(int* a, int shift, int Tsize);
+void LSHIFT64(__int64 *a, int shift, int Tsize);

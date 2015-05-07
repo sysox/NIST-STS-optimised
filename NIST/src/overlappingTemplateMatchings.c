@@ -142,7 +142,7 @@ THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------- */
 
 void
-OverlappingTemplateMatchingsX(int m, int n)
+OverlappingTemplateMatchings2(int m, int n)
 {
 	int				i;
 	double			W_obs, eta, sum, chi2, p_value, lambda;
@@ -212,98 +212,6 @@ OverlappingTemplateMatchingsX(int m, int n)
 	R_.overlapping.chi2=chi2;
 	R_.overlapping.p_value=p_value;
 	for(i=0;i<6;i++) R_.overlapping.nu[i]=nu[i];
-	if(OverlappingTemplateMatchings_v1 == OverlappingTemplateMatchingsX) R1 = R_;
-	else R2 = R_;
-#endif
-
-#ifdef FILE_OUTPUT
-	fprintf(stats[TEST_OVERLAPPING], "\t\t    OVERLAPPING TEMPLATE OF ALL ONES TEST\n");
-	fprintf(stats[TEST_OVERLAPPING], "\t\t-----------------------------------------------\n");
-	fprintf(stats[TEST_OVERLAPPING], "\t\tCOMPUTATIONAL INFORMATION:\n");
-	fprintf(stats[TEST_OVERLAPPING], "\t\t-----------------------------------------------\n");
-	fprintf(stats[TEST_OVERLAPPING], "\t\t(a) n (sequence_length)      = %d\n", n);
-	fprintf(stats[TEST_OVERLAPPING], "\t\t(b) m (block length of 1s)   = %d\n", m);
-	fprintf(stats[TEST_OVERLAPPING], "\t\t(c) M (length of substring)  = %d\n", M);
-	fprintf(stats[TEST_OVERLAPPING], "\t\t(d) N (number of substrings) = %d\n", N);
-	fprintf(stats[TEST_OVERLAPPING], "\t\t(e) lambda [(M-m+1)/2^m]     = %f\n", lambda);
-	fprintf(stats[TEST_OVERLAPPING], "\t\t(f) eta                      = %f\n", eta);
-	fprintf(stats[TEST_OVERLAPPING], "\t\t-----------------------------------------------\n");
-	fprintf(stats[TEST_OVERLAPPING], "\t\t   F R E Q U E N C Y\n");
-	fprintf(stats[TEST_OVERLAPPING], "\t\t  0   1   2   3   4 >=5   Chi^2   P-value  Assignment\n");
-	fprintf(stats[TEST_OVERLAPPING], "\t\t-----------------------------------------------\n");
-	fprintf(stats[TEST_OVERLAPPING], "\t\t%3d %3d %3d %3d %3d %3d  %f ",
-		nu[0], nu[1], nu[2], nu[3], nu[4], nu[5], chi2);
-
-	if ( isNegative(p_value) || isGreaterThanOne(p_value) )
-		fprintf(stats[TEST_OVERLAPPING], "WARNING:  P_VALUE IS OUT OF RANGE.\n");
-
-	fprintf(stats[TEST_OVERLAPPING], "%f %s\n\n", p_value, p_value < ALPHA ? "FAILURE" : "SUCCESS"); fflush(stats[TEST_OVERLAPPING]);
-	fprintf(results[TEST_OVERLAPPING], "%f\n", p_value); fflush(results[TEST_OVERLAPPING]);
-#endif
-}
-
-void
-OverlappingTemplateMatchings2(int m, int n) // formerly _effective
-{
-	int				i;
-	double			W_obs, eta, sum, chi2, p_value, lambda;
-	int				M, N, K = 5;
-	unsigned int	nu[6] = { 0, 0, 0, 0, 0, 0 },sequence;
-	double			pi[6] = { 0.143783, 0.139430, 0.137319, 0.124314, 0.106209, 0.348945 };
-
-	unsigned int    window, **Wj = NULL,mask;
-	int				bit_ind,block;
-
-	M = 1032;
-	N = n/M;
-	sequence = (1 << m)-1;
-	mask = (1 << m)-1;
-
-	lambda = (double)(M-m+1)/pow(2,m);
-	eta = lambda/2.0;
-	sum = 0.0;
-	for ( i=0; i<K; i++ ) {			/* Compute Probabilities */
-		pi[i] = Pr(i, eta);
-		sum += pi[i];
-	}
-	pi[K] = 1 - sum;
-
-
-	//bits(&window,4);
-	for(block = 0; block < N; block++)
-	{
-		W_obs = 0;
-		for(bit_ind = block*M; bit_ind < (block+1)*M-m+1; bit_ind++)
-		{
-			window = get_nth_block4(array,bit_ind);
-			//bits(&window,4);
-			if((mask & window)== sequence){
-					 ++W_obs;
-					//printf("%d",window & mask);
-			}
-			
-		}
-		if ( W_obs <= 4 )
-			nu[(int)W_obs]++;
-		else
-			nu[K]++;
-	}
-
-
-	sum = 0;
-	chi2 = 0.0;                                   /* Compute Chi Square */
-	for ( i=0; i<K+1; i++ ) {
-		chi2 += pow((double)nu[i] - (double)N*pi[i], 2)/((double)N*pi[i]);
-		sum += nu[i];
-		//printf("%d ",nu[i]);
-	}
-	p_value = cephes_igamc(K/2.0, chi2/2.0);
-	//printf("chi2:%lf value: %lf",chi2,p_value);
-
-#ifdef VERIFY_RESULTS
-	R_.overlapping.chi2=chi2;
-	R_.overlapping.p_value=p_value;
-	for(i=0;i<6;i++) R_.overlapping.nu[i]=nu[i];
 	if(OverlappingTemplateMatchings_v1 == OverlappingTemplateMatchings2) R1 = R_;
 	else R2 = R_;
 #endif
@@ -334,6 +242,220 @@ OverlappingTemplateMatchings2(int m, int n) // formerly _effective
 #endif
 }
 
+
+
+void
+OverlappingTemplateMatchings3(int m, int n) // formerly _effective
+{
+	int				i;
+	double			W_obs, eta, sum, chi2, p_value, lambda;
+	int				M, N, K = 5;
+	unsigned int	nu[6] = { 0, 0, 0, 0, 0, 0 }, sequence;
+	double			pi[6] = { 0.143783, 0.139430, 0.137319, 0.124314, 0.106209, 0.348945 };
+
+	unsigned int    window, **Wj = NULL, mask;
+	int				bit_ind, block;
+
+	M = 1032;
+	N = n / M;
+	sequence = (1 << m) - 1;
+	mask = (1 << m) - 1;
+
+	lambda = (double)(M - m + 1) / pow(2, m);
+	eta = lambda / 2.0;
+	sum = 0.0;
+	for (i = 0; i<K; i++) {			/* Compute Probabilities */
+		pi[i] = Pr(i, eta);
+		sum += pi[i];
+	}
+	pi[K] = 1 - sum;
+
+
+	//bits(&window,4);
+	for (block = 0; block < N; block++)
+	{
+		W_obs = 0;
+		for (bit_ind = block*M; bit_ind < (block + 1)*M - m + 1; bit_ind++)
+		{
+			window = get_nth_block4(array, bit_ind);
+			//bits(&window,4);
+			if ((mask & window) == sequence){
+				++W_obs;
+				//printf("%d",window & mask);
+			}
+
+		}
+		if (W_obs <= 4)
+			nu[(int)W_obs]++;
+		else
+			nu[K]++;
+	}
+
+
+	sum = 0;
+	chi2 = 0.0;                                   /* Compute Chi Square */
+	for (i = 0; i<K + 1; i++) {
+		chi2 += pow((double)nu[i] - (double)N*pi[i], 2) / ((double)N*pi[i]);
+		sum += nu[i];
+		//printf("%d ",nu[i]);
+	}
+	p_value = cephes_igamc(K / 2.0, chi2 / 2.0);
+	//printf("chi2:%lf value: %lf",chi2,p_value);
+
+#ifdef VERIFY_RESULTS
+	R_.overlapping.chi2 = chi2;
+	R_.overlapping.p_value = p_value;
+	for (i = 0; i<6; i++) R_.overlapping.nu[i] = nu[i];
+	if (OverlappingTemplateMatchings_v1 == OverlappingTemplateMatchings3) R1 = R_;
+	else R2 = R_;
+#endif
+
+#ifdef FILE_OUTPUT
+	fprintf(stats[TEST_OVERLAPPING], "\t\t    OVERLAPPING TEMPLATE OF ALL ONES TEST\n");
+	fprintf(stats[TEST_OVERLAPPING], "\t\t-----------------------------------------------\n");
+	fprintf(stats[TEST_OVERLAPPING], "\t\tCOMPUTATIONAL INFORMATION:\n");
+	fprintf(stats[TEST_OVERLAPPING], "\t\t-----------------------------------------------\n");
+	fprintf(stats[TEST_OVERLAPPING], "\t\t(a) n (sequence_length)      = %d\n", n);
+	fprintf(stats[TEST_OVERLAPPING], "\t\t(b) m (block length of 1s)   = %d\n", m);
+	fprintf(stats[TEST_OVERLAPPING], "\t\t(c) M (length of substring)  = %d\n", M);
+	fprintf(stats[TEST_OVERLAPPING], "\t\t(d) N (number of substrings) = %d\n", N);
+	fprintf(stats[TEST_OVERLAPPING], "\t\t(e) lambda [(M-m+1)/2^m]     = %f\n", lambda);
+	fprintf(stats[TEST_OVERLAPPING], "\t\t(f) eta                      = %f\n", eta);
+	fprintf(stats[TEST_OVERLAPPING], "\t\t-----------------------------------------------\n");
+	fprintf(stats[TEST_OVERLAPPING], "\t\t   F R E Q U E N C Y\n");
+	fprintf(stats[TEST_OVERLAPPING], "\t\t  0   1   2   3   4 >=5   Chi^2   P-value  Assignment\n");
+	fprintf(stats[TEST_OVERLAPPING], "\t\t-----------------------------------------------\n");
+	fprintf(stats[TEST_OVERLAPPING], "\t\t%3d %3d %3d %3d %3d %3d  %f ",
+		nu[0], nu[1], nu[2], nu[3], nu[4], nu[5], chi2);
+
+	if (isNegative(p_value) || isGreaterThanOne(p_value))
+		fprintf(stats[TEST_OVERLAPPING], "WARNING:  P_VALUE IS OUT OF RANGE.\n");
+
+	fprintf(stats[TEST_OVERLAPPING], "%f %s\n\n", p_value, p_value < ALPHA ? "FAILURE" : "SUCCESS"); fflush(stats[TEST_OVERLAPPING]);
+	fprintf(results[TEST_OVERLAPPING], "%f\n", p_value); fflush(results[TEST_OVERLAPPING]);
+#endif
+}
+
+
+void
+OverlappingTemplateMatchings4(int m, int n)
+{
+	int				i;
+	double			W_obs, eta, sum, chi2, p_value, lambda;
+	int				M, N, K = 5;
+	unsigned int	nu[6] = { 0, 0, 0, 0, 0, 0 }, sequence;
+	double			pi[6] = { 0.143783, 0.139430, 0.137319, 0.124314, 0.106209, 0.348945 };
+
+	unsigned int    window, **Wj = NULL, mask;
+	int				bit_ind, block;
+	unsigned char* pbyte;
+
+	M = 1032;
+	N = n / M;
+	sequence = (1 << m) - 1;
+	mask = (1 << m) - 1;
+
+	lambda = (double)(M - m + 1) / pow(2, m);
+	eta = lambda / 2.0;
+	sum = 0.0;
+	for (i = 0; i<K; i++) {			/* Compute Probabilities */
+		pi[i] = Pr(i, eta);
+		sum += pi[i];
+	}
+	pi[K] = 1 - sum;
+
+
+	//bits(&window,4);
+	for (block = 0; block < N; block++)
+	{
+		W_obs = 0;
+		/*for(bit_ind = block*M; bit_ind < (block+1)*M-m+1; bit_ind++)
+		{
+		window = get_nth_block4(array,bit_ind);
+		//bits(&window,4);
+		if((mask & window)== sequence){
+		++W_obs;
+		//printf("%d",window & mask);
+		}
+
+		}*/
+		i = block*M;
+		while (i % 8 != 0 && i < (block+1)*M - m + 1){
+			window = get_nth_block4(array, i);
+			if ((window & mask) == sequence) ++W_obs;
+			i++;
+		}
+
+		pbyte = array + i / 8;
+		window = get_nth_block4(array, i);
+
+		for (; i < (block + 1)*M - m + 1 - 8; i += 8) {
+			if ((window & mask) == sequence) ++W_obs; window >>= 1;
+			if ((window & mask) == sequence) ++W_obs; window >>= 1;
+			if ((window & mask) == sequence) ++W_obs; window >>= 1;
+			if ((window & mask) == sequence) ++W_obs; window >>= 1;
+			if ((window & mask) == sequence) ++W_obs; window >>= 1;
+			if ((window & mask) == sequence) ++W_obs; window >>= 1;
+			if ((window & mask) == sequence) ++W_obs; window >>= 1;
+			if ((window & mask) == sequence) ++W_obs;
+			window = *(unsigned int*)(++pbyte);
+		}
+
+		for (; i < (block + 1)*M - m + 1; i++) {
+			window = get_nth_block4(array, i);
+			if ((window & mask) == sequence) ++W_obs;
+		}
+
+		if (W_obs <= 4)
+			nu[(int)W_obs]++;
+		else
+			nu[K]++;
+	}
+
+
+	sum = 0;
+	chi2 = 0.0;                                   /* Compute Chi Square */
+	for (i = 0; i<K + 1; i++) {
+		chi2 += pow((double)nu[i] - (double)N*pi[i], 2) / ((double)N*pi[i]);
+		sum += nu[i];
+		//printf("%d ",nu[i]);
+	}
+	p_value = cephes_igamc(K / 2.0, chi2 / 2.0);
+	//printf("chi2:%lf value: %lf",chi2,p_value);
+
+#ifdef VERIFY_RESULTS
+	R_.overlapping.chi2 = chi2;
+	R_.overlapping.p_value = p_value;
+	for (i = 0; i<6; i++) R_.overlapping.nu[i] = nu[i];
+	if (OverlappingTemplateMatchings_v1 == OverlappingTemplateMatchings4) R1 = R_;
+	else R2 = R_;
+#endif
+
+#ifdef FILE_OUTPUT
+	fprintf(stats[TEST_OVERLAPPING], "\t\t    OVERLAPPING TEMPLATE OF ALL ONES TEST\n");
+	fprintf(stats[TEST_OVERLAPPING], "\t\t-----------------------------------------------\n");
+	fprintf(stats[TEST_OVERLAPPING], "\t\tCOMPUTATIONAL INFORMATION:\n");
+	fprintf(stats[TEST_OVERLAPPING], "\t\t-----------------------------------------------\n");
+	fprintf(stats[TEST_OVERLAPPING], "\t\t(a) n (sequence_length)      = %d\n", n);
+	fprintf(stats[TEST_OVERLAPPING], "\t\t(b) m (block length of 1s)   = %d\n", m);
+	fprintf(stats[TEST_OVERLAPPING], "\t\t(c) M (length of substring)  = %d\n", M);
+	fprintf(stats[TEST_OVERLAPPING], "\t\t(d) N (number of substrings) = %d\n", N);
+	fprintf(stats[TEST_OVERLAPPING], "\t\t(e) lambda [(M-m+1)/2^m]     = %f\n", lambda);
+	fprintf(stats[TEST_OVERLAPPING], "\t\t(f) eta                      = %f\n", eta);
+	fprintf(stats[TEST_OVERLAPPING], "\t\t-----------------------------------------------\n");
+	fprintf(stats[TEST_OVERLAPPING], "\t\t   F R E Q U E N C Y\n");
+	fprintf(stats[TEST_OVERLAPPING], "\t\t  0   1   2   3   4 >=5   Chi^2   P-value  Assignment\n");
+	fprintf(stats[TEST_OVERLAPPING], "\t\t-----------------------------------------------\n");
+	fprintf(stats[TEST_OVERLAPPING], "\t\t%3d %3d %3d %3d %3d %3d  %f ",
+		nu[0], nu[1], nu[2], nu[3], nu[4], nu[5], chi2);
+
+	if (isNegative(p_value) || isGreaterThanOne(p_value))
+		fprintf(stats[TEST_OVERLAPPING], "WARNING:  P_VALUE IS OUT OF RANGE.\n");
+
+	fprintf(stats[TEST_OVERLAPPING], "%f %s\n\n", p_value, p_value < ALPHA ? "FAILURE" : "SUCCESS"); fflush(stats[TEST_OVERLAPPING]);
+	fprintf(results[TEST_OVERLAPPING], "%f\n", p_value); fflush(results[TEST_OVERLAPPING]);
+#endif
+}
 
 double
 Pr(int u, double eta)

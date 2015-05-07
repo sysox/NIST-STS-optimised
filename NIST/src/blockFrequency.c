@@ -234,3 +234,82 @@ BlockFrequency3(int M, int n)
 	fprintf(results[TEST_BLOCK_FREQUENCY], "%f\n", p_value); fflush(results[TEST_BLOCK_FREQUENCY]);
 #endif
 }
+
+
+void
+BlockFrequency4(int M, int n)
+{
+	int		N, blockSum, block, n_, i,j, bitend;
+	double  p_value, sum, pi, v, chi_squared;
+
+	int LUT_HW_size = 16;
+	unsigned char *LUT_HW = LUT_HW_16;
+	const int Tsize = 64;
+	unsigned __int64* pblock;
+	unsigned __int64 help;
+	const unsigned int mask = (1 << LUT_HW_size) - 1;
+
+
+
+
+	N = n / M; 		/* # OF SUBSTRING BLOCKS      */
+	n_ = N*M;
+	sum = 0.0;
+	
+
+
+	for (block = 0; block < N; block++){
+		i = block*M;
+		bitend = (block+1)*M;
+		blockSum = 0;
+
+		while (i % 8 != 0 && i < bitend){
+			help = get_nth_block4(array, i);
+			blockSum += help & 1;
+			i++;
+		}
+
+		pblock = (unsigned __int64*)(array+i/8);
+		help = *pblock;
+		for (; i < bitend + 1 - Tsize; i += Tsize) {
+			for (j = 0; j < Tsize / LUT_HW_size; j++){
+				blockSum += LUT_HW[help & mask];
+				help >>= LUT_HW_size;
+			}
+			help = *(++pblock);
+		}
+
+		for (; i < bitend; i++) {
+			help = get_nth_block4(array, i);
+			blockSum += help & 1;
+		}
+		pi = (double)blockSum / (double)M;
+		v = pi - 0.5;
+		sum = sum + v*v;
+	}
+	chi_squared = 4.0 * M * sum;
+	p_value = cephes_igamc(N / 2.0, chi_squared / 2.0);
+#ifdef VERIFY_RESULTS
+	R_.blockfrequency.chi_squared = chi_squared;
+	R_.blockfrequency.p_value = p_value;
+	if (BlockFrequency_v1 == BlockFrequency4) R1 = R_;
+	else R2 = R_;
+#endif
+	//printf("%lf ",sum);
+
+#ifdef FILE_OUTPUT
+	fprintf(stats[TEST_BLOCK_FREQUENCY], "\t\t\tBLOCK FREQUENCY TEST\n");
+	fprintf(stats[TEST_BLOCK_FREQUENCY], "\t\t---------------------------------------------\n");
+	fprintf(stats[TEST_BLOCK_FREQUENCY], "\t\tCOMPUTATIONAL INFORMATION:\n");
+	fprintf(stats[TEST_BLOCK_FREQUENCY], "\t\t---------------------------------------------\n");
+	fprintf(stats[TEST_BLOCK_FREQUENCY], "\t\t(a) Chi^2           = %f\n", chi_squared);
+	fprintf(stats[TEST_BLOCK_FREQUENCY], "\t\t(b) # of substrings = %d\n", N);
+	fprintf(stats[TEST_BLOCK_FREQUENCY], "\t\t(c) block length    = %d\n", M);
+	fprintf(stats[TEST_BLOCK_FREQUENCY], "\t\t(d) Note: %d bits were discarded.\n", n % M);
+	fprintf(stats[TEST_BLOCK_FREQUENCY], "\t\t---------------------------------------------\n");
+
+	fprintf(stats[TEST_BLOCK_FREQUENCY], "%s\t\tp_value = %f\n\n", p_value < ALPHA ? "FAILURE" : "SUCCESS", p_value); fflush(stats[TEST_BLOCK_FREQUENCY]);
+	fprintf(results[TEST_BLOCK_FREQUENCY], "%f\n", p_value); fflush(results[TEST_BLOCK_FREQUENCY]);
+#endif
+}
+

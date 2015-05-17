@@ -235,7 +235,7 @@ BlockFrequency3(int M, int n)
 #endif
 }
 
-
+//based on Alin Suciu suggestions
 void
 BlockFrequency4(int M, int n)
 {

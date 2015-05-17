@@ -199,7 +199,7 @@ Frequency3(int n)
 }
 
 
-//Alin Suciu suggestions
+//based on Alin Suciu suggestions
 void
 Frequency4(int n)
 {
@@ -265,72 +265,4 @@ Frequency4(int n)
 #endif
 }
 
-/*
-void
-Frequency5(int n)
-{
-	int int_sum, mask,i;
-	double	f, s_obs, p_value, sum, sqrt2 = 1.41421356237309504880;
-	unsigned char *p_tmp, *p_end;
-
-	int LUT_HW_size = 64;
-
-	sum = 0.0;
-	int_sum = 0;
-
-
-	p_end = array + (n - (n % LUT_HW_size)) / 8;
-	int_sum += popCountLUT16_32((unsigned __int32*)array, (unsigned __int32*)p_end);
-
-	
-	if (n % LUT_HW_size){
-		for (i = 0; i < n % LUT_HW_size; i++)
-			int_sum += get_nth_block4(p_end, i) & 1;
-	}
-	
-
-	sum = int_sum - (n - int_sum);
-	s_obs = fabs(sum) / sqrt(n);
-	f = s_obs / sqrt2;
-	p_value = erfc(f);
-
-	//printf("Pval: %lf sum %lf", p_value, sum);
-
-
-}
-
-void
-Frequency6(int n)
-{
-	int int_sum, mask, i;
-	double	f, s_obs, p_value, sum, sqrt2 = 1.41421356237309504880;
-	unsigned char *p_tmp, *p_end;
-
-	int LUT_HW_size = 64;
-	int LUT_HW_Bsize = 8;
-
-
-	sum = 0.0;
-	int_sum = 0;
-
-	p_end = array + (n - (n % LUT_HW_size)) / 8;
-	int_sum += popCountBITHACK_32((unsigned __int64*)array, (unsigned __int64*)p_end);
-
-
-	if (n % LUT_HW_size){
-		for (i = 0; i < n % LUT_HW_size; i++)
-			int_sum += get_nth_block4(p_end, i) & 1;
-	}
-
-	sum = int_sum - (n - int_sum);
-	s_obs = fabs(sum) / sqrt(n);
-	f = s_obs / sqrt2;
-	p_value = erfc(f);
-
-	//printf("Pval: %lf sum %lf", p_value, sum);
-
-
-}
-
-*/
 

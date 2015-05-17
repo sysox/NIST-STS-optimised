@@ -346,13 +346,10 @@ Runs3(int n)
 #ifdef FILE_OUTPUT
 	fprintf(results[TEST_RUNS], "%f\n", p_value); fflush(results[TEST_RUNS]);
 #endif
-
-	//printf("R_: %d %lf \n",S,(double)V);
-
 }
 
 
-
+//based on Alin Suciu suggestions and bit tricks from http://graphics.stanford.edu/~seander/bithacks.html
 void
 Runs4(int n)
 {
@@ -372,9 +369,6 @@ Runs4(int n)
 	unsigned __int64* pblock;
 	unsigned __int64 help, val1 , val2;
 	const unsigned int mask = (1 << LUT_HW_size) - 1;
-
-
-
 
 	S = 0;
 
@@ -410,8 +404,6 @@ Runs4(int n)
 		R_.runs.V = 0.0;
 		R_.runs.erfc_arg = 0.0;
 #endif
-
-
 	}
 	else {
 
@@ -471,7 +463,4 @@ Runs4(int n)
 #ifdef FILE_OUTPUT
 	fprintf(results[TEST_RUNS], "%f\n", p_value); fflush(results[TEST_RUNS]);
 #endif
-
-	//printf("R2: %d %lf \n",S,(double)V);
-
 }

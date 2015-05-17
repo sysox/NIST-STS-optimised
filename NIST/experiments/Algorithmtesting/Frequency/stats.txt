@@ -1,9 +1,0 @@
-			      FREQUENCY TEST
-		---------------------------------------------
-		COMPUTATIONAL INFORMATION:
-		---------------------------------------------
-		(a) The nth partial sum = 0
-		(b) S_n/n               = -1.#IND00
-		---------------------------------------------
-SUCCESS		p_value = 1.#QNAN0
-

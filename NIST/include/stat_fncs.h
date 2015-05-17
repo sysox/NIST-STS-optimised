@@ -4,7 +4,7 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
-#define	Frequency_v1 Frequency3
+#define	Frequency_v1 Frequency
 #define	Frequency_v2 Frequency4
 #define BlockFrequency_v1 BlockFrequency
 #define BlockFrequency_v2 BlockFrequency4
@@ -19,9 +19,9 @@
 #define	DiscreteFourierTransform_v1 DiscreteFourierTransform
 #define	DiscreteFourierTransform_v2 DiscreteFourierTransform2
 #define	NonOverlappingTemplateMatchings_v1 NonOverlappingTemplateMatchings
-#define	NonOverlappingTemplateMatchings_v2 NonOverlappingTemplateMatchings2
+#define	NonOverlappingTemplateMatchings_v2 NonOverlappingTemplateMatchings4
 #define	OverlappingTemplateMatchings_v1 OverlappingTemplateMatchings
-#define	OverlappingTemplateMatchings_v2 OverlappingTemplateMatchings4
+#define	OverlappingTemplateMatchings_v2 OverlappingTemplateMatchings2
 #define	Universal_v1 Universal
 #define	Universal_v2 Universal2
 #define	ApproximateEntropy_v1 ApproximateEntropy

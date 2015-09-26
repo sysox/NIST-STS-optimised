@@ -21,7 +21,10 @@ OverlappingTemplateMatchings(int m, int n)
 	double			W_obs, eta, sum, chi2, p_value, lambda;
 	int				M, N, j, K = 5;
 	unsigned int	nu[6] = { 0, 0, 0, 0, 0, 0 };
-	double			pi[6] = { 0.143783, 0.139430, 0.137319, 0.124314, 0.106209, 0.348945 };
+	//double			pi[6] = { 0.143783, 0.139430, 0.137319, 0.124314, 0.106209, 0.348945 }; //old incorrect
+	double			pi[6] = { 0.364091, 0.185659, 0.139381, 0.100571, 0.0704323, 0.139865 };
+	
+	
 	BitSequence		*sequence;
 
 	M = 1032;
@@ -148,7 +151,8 @@ OverlappingTemplateMatchings2(int m, int n)
 	double			W_obs, eta, sum, chi2, p_value, lambda;
 	int				M, K = 5;
 	unsigned int	N, nu[6] = { 0, 0, 0, 0, 0, 0 },sequence;
-	double			pi[6] = { 0.143783, 0.139430, 0.137319, 0.124314, 0.106209, 0.348945 };
+	//double			pi[6] = { 0.143783, 0.139430, 0.137319, 0.124314, 0.106209, 0.348945 }; //old incorrect
+	double			pi[6] = { 0.364091, 0.185659, 0.139381, 0.100571, 0.0704323, 0.139865 };
 
 	unsigned int    window, **Wj = NULL,mask;
 	unsigned int	bit_ind,byte_ind,block, byte_size;
@@ -251,8 +255,8 @@ OverlappingTemplateMatchings3(int m, int n) // formerly _effective
 	double			W_obs, eta, sum, chi2, p_value, lambda;
 	int				M, N, K = 5;
 	unsigned int	nu[6] = { 0, 0, 0, 0, 0, 0 }, sequence;
-	double			pi[6] = { 0.143783, 0.139430, 0.137319, 0.124314, 0.106209, 0.348945 };
-
+	//double			pi[6] = { 0.143783, 0.139430, 0.137319, 0.124314, 0.106209, 0.348945 }; //old incorrect
+	double			pi[6] = { 0.364091, 0.185659, 0.139381, 0.100571, 0.0704323, 0.139865 };
 	unsigned int    window, **Wj = NULL, mask;
 	int				bit_ind, block;
 
@@ -344,7 +348,8 @@ OverlappingTemplateMatchings4(int m, int n)
 	double			W_obs, eta, sum, chi2, p_value, lambda;
 	int				M, N, K = 5;
 	unsigned int	nu[6] = { 0, 0, 0, 0, 0, 0 }, sequence;
-	double			pi[6] = { 0.143783, 0.139430, 0.137319, 0.124314, 0.106209, 0.348945 };
+	//double			pi[6] = { 0.143783, 0.139430, 0.137319, 0.124314, 0.106209, 0.348945 }; //old incorrect
+	double			pi[6] = { 0.364091, 0.185659, 0.139381, 0.100571, 0.0704323, 0.139865 };
 
 	unsigned int    window, **Wj = NULL, mask;
 	int				bit_ind, block;

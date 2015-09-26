@@ -301,7 +301,7 @@ NonOverlappingTemplateMatchings2(int m, int n)
 	varWj = M*(1.0/pow(2.0, m) - (2.0*m-1.0)/pow(2.0, 2.0*m));
 	
 	sprintf(directory, "templates/template%d", m);
-	fp=fopen(directory, "r");
+	
 	
 	if ( ((isNegative(lambda)) || (isZero(lambda))) ||
 		 ((fp = fopen(directory, "r")) == NULL) 
@@ -545,7 +545,7 @@ NonOverlappingTemplateMatchings4(int m, int n)
 	varWj = M*(1.0 / pow(2.0, m) - (2.0*m - 1.0) / pow(2.0, 2.0*m));
 
 	sprintf(directory, "templates/template%d", m);
-	fp = fopen(directory, "r");
+
 
 	if (((isNegative(lambda)) || (isZero(lambda))) ||
 		((fp = fopen(directory, "r")) == NULL)

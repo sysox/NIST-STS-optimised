@@ -19,9 +19,9 @@
 #define	DiscreteFourierTransform_v1 DiscreteFourierTransform
 #define	DiscreteFourierTransform_v2 DiscreteFourierTransform2
 #define	NonOverlappingTemplateMatchings_v1 NonOverlappingTemplateMatchings
-#define	NonOverlappingTemplateMatchings_v2 NonOverlappingTemplateMatchings4
+#define	NonOverlappingTemplateMatchings_v2 NonOverlappingTemplateMatchings2
 #define	OverlappingTemplateMatchings_v1 OverlappingTemplateMatchings
-#define	OverlappingTemplateMatchings_v2 OverlappingTemplateMatchings2
+#define	OverlappingTemplateMatchings_v2 OverlappingTemplateMatchings4
 #define	Universal_v1 Universal
 #define	Universal_v2 Universal2
 #define	ApproximateEntropy_v1 ApproximateEntropy
@@ -33,9 +33,10 @@
 #define	LinearComplexity_v1 LinearComplexity
 #define	LinearComplexity_v2 LinearComplexity3
 #define	Serial_v1 Serial
-#define	Serial_v2 Serial4 
+#define	Serial_v2 Serial4
 
 //original functions
+
 void	Frequency(int n);
 void	BlockFrequency(int M, int n);
 void	CumulativeSums(int n);
@@ -84,14 +85,14 @@ void	LinearComplexity3(int M, int n);
 //version 4 and more
 void	DiscreteFourierTransform4(int n);
 
-void	BlockFrequency4(int M, int n);  //OK correct
+void	BlockFrequency4(int M, int n);  
 void	Runs4();
 
-void	Frequency4(int n); //OK correct
+void	Frequency4(int n); 
 
-void	OverlappingTemplateMatchings4(int m, int n); //OK correct
-void    NonOverlappingTemplateMatchings4(int m, int n); //to check 
-void    Serial4(int m, int n); //OK correct 
+void	OverlappingTemplateMatchings4(int m, int n); 
+void    NonOverlappingTemplateMatchings4(int m, int n); 
+void    Serial2(int m, int n); 
 
 
 

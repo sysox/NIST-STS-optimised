@@ -854,7 +854,7 @@ void test(int testcase,int smallnumbers)
 
 			if(testcase == TEST_OVERLAPPING)
 			{
-				for(k=9;k<=10;k++)
+				for(k=2;k<=10;k++)
 				{
 					if(i>=k)
 					{

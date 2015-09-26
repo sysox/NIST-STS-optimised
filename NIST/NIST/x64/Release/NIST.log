@@ -1,5 +1,5 @@
-﻿Build started 15. 5. 2015 13:37:54.
-     1>Project "D:\_Research\Projects\Statistical_testing\Batteries DIEHARD NIST TESTU01\NIST STS\NIST\NIST\NIST.vcxproj" on node 2 (Rebuild target(s)).
+﻿Build started 24. 9. 2015 9:37:55.
+     1>Project "D:\_Research\Projects\Statistical_testing\Batteries DIEHARD NIST TESTU01\NIST STS\github\NIST-STS-optimised\NIST\NIST\NIST.vcxproj" on node 2 (Rebuild target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Release\\" /Fd"x64\Release\vc120.pdb" /Gd /TC /errorReport:prompt approximateEntropy.c assess.c blockFrequency.c BM.c BMA.c cephes.c cusum.c dfft.c discreteFourierTransform.c erf.c frequency.c generators.c genutils.c linearComplexity.c longestRunOfOnes.c LUTs.c "main-correctness.c" matrix.c nonOverlappingTemplateMatchings.c overlappingTemplateMatchings.c randomExcursions.c randomExcursionsVariant.c rank.c runs.c serial.c tools.c universal.c utilities.c
          approximateEntropy.c
@@ -39,26 +39,26 @@
          BMA.c
      1>BMA.c(47): warning C4146: unary minus operator applied to unsigned type, result still unsigned
          cephes.c
-     1>d:\_research\projects\statistical_testing\batteries diehard nist testu01\nist sts\nist\nist\../include/erf.h(12): warning C4273: 'erf' : inconsistent dll linkage
+     1>d:\_research\projects\statistical_testing\batteries diehard nist testu01\nist sts\github\nist-sts-optimised\nist\nist\../include/erf.h(12): warning C4273: 'erf' : inconsistent dll linkage
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(486) : see previous definition of 'erf'
-     1>d:\_research\projects\statistical_testing\batteries diehard nist testu01\nist sts\nist\nist\../include/erf.h(13): warning C4273: 'erfc' : inconsistent dll linkage
+     1>d:\_research\projects\statistical_testing\batteries diehard nist testu01\nist sts\github\nist-sts-optimised\nist\nist\../include/erf.h(13): warning C4273: 'erfc' : inconsistent dll linkage
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(487) : see previous definition of 'erfc'
          cusum.c
          dfft.c
          discreteFourierTransform.c
-     1>d:\_research\projects\statistical_testing\batteries diehard nist testu01\nist sts\nist\nist\../include/erf.h(12): warning C4273: 'erf' : inconsistent dll linkage
+     1>d:\_research\projects\statistical_testing\batteries diehard nist testu01\nist sts\github\nist-sts-optimised\nist\nist\../include/erf.h(12): warning C4273: 'erf' : inconsistent dll linkage
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(486) : see previous definition of 'erf'
-     1>d:\_research\projects\statistical_testing\batteries diehard nist testu01\nist sts\nist\nist\../include/erf.h(13): warning C4273: 'erfc' : inconsistent dll linkage
+     1>d:\_research\projects\statistical_testing\batteries diehard nist testu01\nist sts\github\nist-sts-optimised\nist\nist\../include/erf.h(13): warning C4273: 'erfc' : inconsistent dll linkage
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(487) : see previous definition of 'erfc'
          erf.c
-     1>d:\_research\projects\statistical_testing\batteries diehard nist testu01\nist sts\nist\nist\../include/erf.h(12): warning C4273: 'erf' : inconsistent dll linkage
+     1>d:\_research\projects\statistical_testing\batteries diehard nist testu01\nist sts\github\nist-sts-optimised\nist\nist\../include/erf.h(12): warning C4273: 'erf' : inconsistent dll linkage
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(486) : see previous definition of 'erf'
-     1>d:\_research\projects\statistical_testing\batteries diehard nist testu01\nist sts\nist\nist\../include/erf.h(13): warning C4273: 'erfc' : inconsistent dll linkage
+     1>d:\_research\projects\statistical_testing\batteries diehard nist testu01\nist sts\github\nist-sts-optimised\nist\nist\../include/erf.h(13): warning C4273: 'erfc' : inconsistent dll linkage
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(487) : see previous definition of 'erfc'
          frequency.c
-     1>d:\_research\projects\statistical_testing\batteries diehard nist testu01\nist sts\nist\nist\../include/erf.h(12): warning C4273: 'erf' : inconsistent dll linkage
+     1>d:\_research\projects\statistical_testing\batteries diehard nist testu01\nist sts\github\nist-sts-optimised\nist\nist\../include/erf.h(12): warning C4273: 'erf' : inconsistent dll linkage
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(486) : see previous definition of 'erf'
-     1>d:\_research\projects\statistical_testing\batteries diehard nist testu01\nist sts\nist\nist\../include/erf.h(13): warning C4273: 'erfc' : inconsistent dll linkage
+     1>d:\_research\projects\statistical_testing\batteries diehard nist testu01\nist sts\github\nist-sts-optimised\nist\nist\../include/erf.h(13): warning C4273: 'erfc' : inconsistent dll linkage
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(487) : see previous definition of 'erfc'
          generators.c
          genutils.c
@@ -78,52 +78,50 @@
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdio.h(211) : see declaration of 'fopen'
      1>nonOverlappingTemplateMatchings.c(113): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdio.h(230) : see declaration of 'fscanf'
-     1>nonOverlappingTemplateMatchings.c(279): warning C4334: '<<' : result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
-     1>nonOverlappingTemplateMatchings.c(304): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>nonOverlappingTemplateMatchings.c(278): warning C4334: '<<' : result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
+     1>nonOverlappingTemplateMatchings.c(303): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdio.h(356) : see declaration of 'sprintf'
-     1>nonOverlappingTemplateMatchings.c(309): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>nonOverlappingTemplateMatchings.c(308): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdio.h(211) : see declaration of 'fopen'
-     1>nonOverlappingTemplateMatchings.c(369): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>nonOverlappingTemplateMatchings.c(368): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdio.h(230) : see declaration of 'fscanf'
-     1>nonOverlappingTemplateMatchings.c(415): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>nonOverlappingTemplateMatchings.c(403): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdio.h(211) : see declaration of 'fopen'
-     1>nonOverlappingTemplateMatchings.c(423): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>nonOverlappingTemplateMatchings.c(411): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdio.h(230) : see declaration of 'fscanf'
-     1>nonOverlappingTemplateMatchings.c(534): warning C4334: '<<' : result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
-     1>nonOverlappingTemplateMatchings.c(559): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>nonOverlappingTemplateMatchings.c(522): warning C4334: '<<' : result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
+     1>nonOverlappingTemplateMatchings.c(547): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdio.h(356) : see declaration of 'sprintf'
-     1>nonOverlappingTemplateMatchings.c(560): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>nonOverlappingTemplateMatchings.c(552): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdio.h(211) : see declaration of 'fopen'
-     1>nonOverlappingTemplateMatchings.c(564): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdio.h(211) : see declaration of 'fopen'
-     1>nonOverlappingTemplateMatchings.c(626): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>nonOverlappingTemplateMatchings.c(614): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdio.h(230) : see declaration of 'fscanf'
-     1>nonOverlappingTemplateMatchings.c(667): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>nonOverlappingTemplateMatchings.c(643): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdio.h(211) : see declaration of 'fopen'
-     1>nonOverlappingTemplateMatchings.c(675): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>nonOverlappingTemplateMatchings.c(651): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdio.h(230) : see declaration of 'fscanf'
-     1>nonOverlappingTemplateMatchings.c(498): warning C4101: 'bit_ind' : unreferenced local variable
-     1>nonOverlappingTemplateMatchings.c(497): warning C4101: 'window' : unreferenced local variable
+     1>nonOverlappingTemplateMatchings.c(486): warning C4101: 'bit_ind' : unreferenced local variable
+     1>nonOverlappingTemplateMatchings.c(485): warning C4101: 'window' : unreferenced local variable
          overlappingTemplateMatchings.c
-     1>overlappingTemplateMatchings.c(350): warning C4101: 'bit_ind' : unreferenced local variable
+     1>overlappingTemplateMatchings.c(355): warning C4101: 'bit_ind' : unreferenced local variable
          Compiling...
          randomExcursions.c
          randomExcursionsVariant.c
-     1>d:\_research\projects\statistical_testing\batteries diehard nist testu01\nist sts\nist\nist\../include/erf.h(12): warning C4273: 'erf' : inconsistent dll linkage
+     1>d:\_research\projects\statistical_testing\batteries diehard nist testu01\nist sts\github\nist-sts-optimised\nist\nist\../include/erf.h(12): warning C4273: 'erf' : inconsistent dll linkage
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(486) : see previous definition of 'erf'
-     1>d:\_research\projects\statistical_testing\batteries diehard nist testu01\nist sts\nist\nist\../include/erf.h(13): warning C4273: 'erfc' : inconsistent dll linkage
+     1>d:\_research\projects\statistical_testing\batteries diehard nist testu01\nist sts\github\nist-sts-optimised\nist\nist\../include/erf.h(13): warning C4273: 'erfc' : inconsistent dll linkage
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(487) : see previous definition of 'erfc'
          rank.c
          runs.c
-     1>d:\_research\projects\statistical_testing\batteries diehard nist testu01\nist sts\nist\nist\../include/erf.h(12): warning C4273: 'erf' : inconsistent dll linkage
+     1>d:\_research\projects\statistical_testing\batteries diehard nist testu01\nist sts\github\nist-sts-optimised\nist\nist\../include/erf.h(12): warning C4273: 'erf' : inconsistent dll linkage
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(486) : see previous definition of 'erf'
-     1>d:\_research\projects\statistical_testing\batteries diehard nist testu01\nist sts\nist\nist\../include/erf.h(13): warning C4273: 'erfc' : inconsistent dll linkage
+     1>d:\_research\projects\statistical_testing\batteries diehard nist testu01\nist sts\github\nist-sts-optimised\nist\nist\../include/erf.h(13): warning C4273: 'erfc' : inconsistent dll linkage
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(487) : see previous definition of 'erfc'
-     1>runs.c(419): warning C4133: '=' : incompatible types - from 'unsigned char *' to 'unsigned __int64 *'
-     1>runs.c(373): warning C4101: 'val2' : unreferenced local variable
-     1>runs.c(359): warning C4101: 'k' : unreferenced local variable
-     1>runs.c(373): warning C4101: 'val1' : unreferenced local variable
-     1>runs.c(359): warning C4101: 'diff' : unreferenced local variable
+     1>runs.c(411): warning C4133: '=' : incompatible types - from 'unsigned char *' to 'unsigned __int64 *'
+     1>runs.c(370): warning C4101: 'val2' : unreferenced local variable
+     1>runs.c(356): warning C4101: 'k' : unreferenced local variable
+     1>runs.c(370): warning C4101: 'val1' : unreferenced local variable
+     1>runs.c(356): warning C4101: 'diff' : unreferenced local variable
          serial.c
          tools.c
      1>tools.c(166): warning C4101: 'val1' : unreferenced local variable
@@ -133,9 +131,9 @@
      1>tools.c(248): warning C4133: '=' : incompatible types - from 'unsigned char *' to 'unsigned int *'
      1>tools.c(249): warning C4133: '=' : incompatible types - from 'unsigned char *' to 'unsigned int *'
          universal.c
-     1>d:\_research\projects\statistical_testing\batteries diehard nist testu01\nist sts\nist\nist\../include/erf.h(12): warning C4273: 'erf' : inconsistent dll linkage
+     1>d:\_research\projects\statistical_testing\batteries diehard nist testu01\nist sts\github\nist-sts-optimised\nist\nist\../include/erf.h(12): warning C4273: 'erf' : inconsistent dll linkage
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(486) : see previous definition of 'erf'
-     1>d:\_research\projects\statistical_testing\batteries diehard nist testu01\nist sts\nist\nist\../include/erf.h(13): warning C4273: 'erfc' : inconsistent dll linkage
+     1>d:\_research\projects\statistical_testing\batteries diehard nist testu01\nist sts\github\nist-sts-optimised\nist\nist\../include/erf.h(13): warning C4273: 'erfc' : inconsistent dll linkage
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(487) : see previous definition of 'erfc'
          utilities.c
      1>utilities.c(27): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
@@ -191,8 +189,9 @@
      1>utilities.c(460): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdio.h(283) : see declaration of 'scanf'
      1>utilities.c(552): warning C4013: 'ApproximateEntropy4' undefined; assuming extern returning int
+     1>utilities.c(562): warning C4013: 'Serial4' undefined; assuming extern returning int
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"D:\_Research\Projects\Statistical_testing\Batteries DIEHARD NIST TESTU01\NIST STS\NIST\x64\Release\NIST.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\_Research\Projects\Statistical_testing\Batteries DIEHARD NIST TESTU01\NIST STS\NIST\x64\Release\NIST.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\_Research\Projects\Statistical_testing\Batteries DIEHARD NIST TESTU01\NIST STS\NIST\x64\Release\NIST.lib" /MACHINE:X64 x64\Release\approximateEntropy.obj
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"D:\_Research\Projects\Statistical_testing\Batteries DIEHARD NIST TESTU01\NIST STS\github\NIST-STS-optimised\NIST\x64\Release\NIST.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\_Research\Projects\Statistical_testing\Batteries DIEHARD NIST TESTU01\NIST STS\github\NIST-STS-optimised\NIST\x64\Release\NIST.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\_Research\Projects\Statistical_testing\Batteries DIEHARD NIST TESTU01\NIST STS\github\NIST-STS-optimised\NIST\x64\Release\NIST.lib" /MACHINE:X64 x64\Release\approximateEntropy.obj
          x64\Release\assess.obj
          x64\Release\blockFrequency.obj
          x64\Release\BM.obj
@@ -221,12 +220,12 @@
          x64\Release\universal.obj
          x64\Release\utilities.obj
          "fft64\libfftw3-3.lib"
-            Creating library D:\_Research\Projects\Statistical_testing\Batteries DIEHARD NIST TESTU01\NIST STS\NIST\x64\Release\NIST.lib and object D:\_Research\Projects\Statistical_testing\Batteries DIEHARD NIST TESTU01\NIST STS\NIST\x64\Release\NIST.exp
+            Creating library D:\_Research\Projects\Statistical_testing\Batteries DIEHARD NIST TESTU01\NIST STS\github\NIST-STS-optimised\NIST\x64\Release\NIST.lib and object D:\_Research\Projects\Statistical_testing\Batteries DIEHARD NIST TESTU01\NIST STS\github\NIST-STS-optimised\NIST\x64\Release\NIST.exp
          Generating code
          Finished generating code
-         NIST.vcxproj -> D:\_Research\Projects\Statistical_testing\Batteries DIEHARD NIST TESTU01\NIST STS\NIST\x64\Release\NIST.exe
-     1>Done Building Project "D:\_Research\Projects\Statistical_testing\Batteries DIEHARD NIST TESTU01\NIST STS\NIST\NIST\NIST.vcxproj" (Rebuild target(s)).
+         NIST.vcxproj -> D:\_Research\Projects\Statistical_testing\Batteries DIEHARD NIST TESTU01\NIST STS\github\NIST-STS-optimised\NIST\x64\Release\NIST.exe
+     1>Done Building Project "D:\_Research\Projects\Statistical_testing\Batteries DIEHARD NIST TESTU01\NIST STS\github\NIST-STS-optimised\NIST\NIST\NIST.vcxproj" (Rebuild target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:02.60
+Time Elapsed 00:00:03.97
